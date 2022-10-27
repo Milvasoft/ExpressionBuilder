@@ -13,29 +13,23 @@ namespace ExpressionBuilder.Test.Integration
     [TestFixture]
     public class PropertyLoaderTest
     {
-        private readonly List<string> propertyIds = new List<string>
+        private readonly List<string> propertyIds = new()
         {
             "Id", "Name", "Gender", "Salary", "Birth.Date", "Birth.DateOffset", "Birth.Age", "Birth.Country", "Contacts[Type]", "Contacts[Value]", "Contacts[Comments]", "Employer.Name", "Employer.Industry", "EmployeeReferenceNumber"
         };
 
-        private readonly List<string> propertyNames = new List<string>
+        private readonly List<string> propertyNames = new()
         {
             "Id", "Name", "Gender", "Salary", "Date of Birth", "DateOffset","Age", "Country of Birth", "Contact's Type", "Contact's Value", "Contact's Comments", "Employer's Name", "Employer's Industry", "EmployeeReferenceNumber"
         };
 
-        private readonly List<string> propertyNamesptBr = new List<string>
+        private readonly List<string> propertyNamesptBr = new()
         {
             "Id", "Nome", "Sexo", "Salário", "Data de nascimento", "DateOffset", "Idade", "País de origem", "Tipo de contato", "Valor do contato", "Comentários do contato", "Nome do empregador", "Indústria do empregador", "EmployeeReferenceNumber"
         };
 
-#if NETCOREAPP2_0
         [TestCase("", TestName = "Loading properties' info", Ignore = "Having some trouble making this work properly")]
         [TestCase("pt-BR", TestName = "Loading properties' info [Portuguese]", Ignore = "Having some trouble making this work properly")]
-#else
-
-        [TestCase("", TestName = "Loading properties' info")]
-        [TestCase("pt-BR", TestName = "Loading properties' info [Portuguese]")]
-#endif
         public void PropertyLoaderLoadProperties(string cultureName)
         {
             CultureInfo culture = CultureInfo.CreateSpecificCulture(cultureName);
@@ -49,34 +43,22 @@ namespace ExpressionBuilder.Test.Integration
 
             Assert.That(ids, Is.EquivalentTo(propertyIds));
 
-            if (cultureName == "pt-BR")
-            {
-                Assert.That(names, Is.EquivalentTo(propertyNamesptBr));
-            }
-            else
-            {
-                Assert.That(names, Is.EquivalentTo(propertyNames));
-            }
+            Assert.That(names, cultureName == "pt-BR" 
+                ? Is.EquivalentTo(propertyNamesptBr) 
+                : Is.EquivalentTo(propertyNames));
         }
 
-#if NETCOREAPP2_0
         [TestCase(TestName = "The string representation of a property should be its name followed by its id", Ignore = "Having some trouble making this work properly")]
-#else
-
-        [TestCase(TestName = "The string representation of a property should be its name followed by its id")]
-#endif
         public void PropertyToString()
         {
-            CultureInfo culture = CultureInfo.CreateSpecificCulture(string.Empty);
+            var culture = CultureInfo.CreateSpecificCulture(string.Empty);
             Thread.CurrentThread.CurrentCulture = culture;
             Thread.CurrentThread.CurrentUICulture = culture;
 
             IPropertyCollection loader = new PropertyCollection(typeof(Person));
             var properties = loader.LoadProperties(Resources.Person.ResourceManager);
             foreach (var property in properties)
-            {
-                property.ToString().Should().Be(string.Format("{0} ({1})", property.Name, property.Id));
-            }
+                property.ToString().Should().Be($"{property.Name} ({property.Id})");
         }
 
         [TestCase(TestName = "Checking the loading of classes' properties and fields")]

@@ -1,11 +1,9 @@
 ﻿using ExpressionBuilder.Common;
-using System;
 
-namespace ExpressionBuilder.Configuration
+namespace ExpressionBuilder.Configuration;
+
+public class SupportedType
 {
-    public class SupportedType
-    {
-        public TypeGroup TypeGroup { get; set; }
-        public Type Type { get; set; }
-    }
+    public TypeGroup TypeGroup { get; set; }
+    public Type Type { get; set; }
 }

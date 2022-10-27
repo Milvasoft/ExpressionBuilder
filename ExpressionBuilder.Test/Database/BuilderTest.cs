@@ -1,18 +1,8 @@
-﻿#if (NETSTANDARD2_0 || NETSTANDARD2_1 || NETSTANDARD2_2 || NETCOREAPP2_0 || NETCOREAPP2_1 || NETCOREAPP2_2)
-
-using ExpressionBuilder.Test.NetCore.Database;
-
-#else
-
-using DbContext;
-
-#endif
-
+﻿using ExpressionBuilder.Test.NetCore.Database;
 using ExpressionBuilder.Common;
 using ExpressionBuilder.Generics;
 using ExpressionBuilder.Operations;
 using NUnit.Framework;
-using System;
 using System.Linq;
 
 namespace ExpressionBuilder.Test.Database
@@ -20,7 +10,7 @@ namespace ExpressionBuilder.Test.Database
     [TestFixture(Category = "Database")]
     public class BuilderTest
     {
-        private readonly DbDataContext db = new DbDataContext();
+        private readonly DbDataContext db = new();
 
         [TestCase(TestName = "Filter without statements")]
         public void FilterWithoutStatements()
@@ -47,7 +37,7 @@ namespace ExpressionBuilder.Test.Database
         public void FilterCastingTheValueToObject()
         {
             var filter = new Filter<Products>();
-            filter.By("UnitPrice", Operation.GreaterThan, (object)new Decimal(100));
+            filter.By("UnitPrice", Operation.GreaterThan, (object)new decimal(100));
             var products = db.Products.Where(filter);
             var solution = db.Products.Where(p => p.UnitPrice > 100);
             Assert.That(products, Is.EquivalentTo(solution));
@@ -57,11 +47,13 @@ namespace ExpressionBuilder.Test.Database
         public void FilterWithPropertyChainFilterStatements()
         {
             var filter = new Filter<Products>();
-            filter.By("Categories.CategoryName", Operation.EqualTo, "Beverages", default(string), Connector.Or);
+            filter.By("Categories.CategoryName", Operation.EqualTo, "Beverages", default, Connector.Or);
             filter.By("ProductID", Operation.In, new[] { 1, 2, 4, 5 });
             var products = db.Products.Where(filter);
-            var solution = db.Products.Where(p => (p.Categories != null && p.Categories.CategoryName != null && p.Categories.CategoryName.Trim().ToLower().Equals("beverages")) ||
-                                                  new[] { 1, 2, 4, 5 }.Contains(p.ProductID));
+            var solution = db.Products.Where(p =>
+                (p.Categories != null && p.Categories.CategoryName != null &&
+                 p.Categories.CategoryName.Trim().ToLower().Equals("beverages")) ||
+                new[] { 1, 2, 4, 5 }.Contains(p.ProductID));
             Assert.That(products, Is.EquivalentTo(solution));
         }
 
@@ -69,10 +61,12 @@ namespace ExpressionBuilder.Test.Database
         public void FilterWithPropertyListFilterStatements()
         {
             var filter = new Filter<Products>();
-            filter.By("OrderDetails[Discount]", Operation.GreaterThan, 0F).And.By("Categories.CategoryName", Operation.StartsWith, " Con ");
+            filter.By("OrderDetails[Discount]", Operation.GreaterThan, 0F).And
+                .By("Categories.CategoryName", Operation.StartsWith, " Con ");
             var people = db.Products.Where(filter);
             var solution = db.Products.Where(p => p.OrderDetails != null && p.OrderDetails.Any(o => o.Discount > 0F) &&
-                                             (p.Categories != null && p.Categories.CategoryName != null && p.Categories.CategoryName.Trim().ToLower().StartsWith("con")));
+                                                  (p.Categories != null && p.Categories.CategoryName != null &&
+                                                   p.Categories.CategoryName.Trim().ToLower().StartsWith("con")));
             Assert.That(people, Is.EquivalentTo(solution));
         }
 
@@ -112,7 +106,8 @@ namespace ExpressionBuilder.Test.Database
             var filter = new Filter<Products>();
             filter.By("OrderDetails[Orders.ShipRegion]", Operation.IsNotNull);
             var people = db.Products.Where(filter);
-            var solution = db.Products.Where(p => p.OrderDetails != null && p.OrderDetails.Any(o => o.Orders.ShipRegion != null));
+            var solution = db.Products.Where(p =>
+                p.OrderDetails != null && p.OrderDetails.Any(o => o.Orders.ShipRegion != null));
             Assert.That(people, Is.EquivalentTo(solution));
         }
 

@@ -28,8 +28,6 @@
     <tags>LINQ Lambda Expression Builder LINQ Database Queryable</tags>
   </metadata>
   <files>
-    <file src="bin\$configuration$\net452\$id$.dll" target="lib\net452" />
-    <file src="bin\$configuration$\net452\$id$.xml" target="lib\net452" />
     <file src="bin\$configuration$\netstandard2.0\$id$.dll" target="lib\netstandard2.0" />
     <file src="bin\$configuration$\netstandard2.0\$id$.xml" target="lib\netstandard2.0" />
     <file src="readme.md" target="" />

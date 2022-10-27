@@ -16,7 +16,23 @@ namespace ExpressionBuilder.Test.NetCore.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<OrderDetails>(entity => { entity.HasKey(e => new { e.OrderID, e.ProductID }); });
+            modelBuilder.Entity<Categories>(entity =>
+            {
+                entity.HasOne<Products>()
+                    .WithOne(c => c.Categories)
+                    .HasForeignKey<Categories>(f => f.CategoryID);
+            });
+
+            modelBuilder.Entity<OrderDetails>(entity =>
+            {
+                entity.HasKey(e => new { e.OrderID, e.ProductID });
+                
+                entity.HasOne(p => p.Products)
+                    .WithMany(c => c.OrderDetails)
+                    .HasForeignKey(c => c.ProductID);
+                
+                entity.HasOne(p => p.Orders);
+            });
             base.OnModelCreating(modelBuilder);
         }
     }
@@ -54,6 +70,7 @@ namespace ExpressionBuilder.Test.NetCore.Database
     {
         public int OrderID { get; set; }
         public int ProductID { get; set; }
+        public Products Products { get; set; }
         public Orders Orders { get; set; }
         public float Discount { get; set; }
     }
