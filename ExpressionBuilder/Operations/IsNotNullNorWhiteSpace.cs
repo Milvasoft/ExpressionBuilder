@@ -17,6 +17,7 @@ public class IsNotNullNorWhiteSpace : OperationBase
     {
         Expression exprNull = Expression.Constant(null);
         Expression exprEmpty = Expression.Constant(string.Empty);
+        
         return Expression.AndAlso(
             Expression.NotEqual(member, exprNull),
             Expression.NotEqual(member.TrimToLower(), exprEmpty));

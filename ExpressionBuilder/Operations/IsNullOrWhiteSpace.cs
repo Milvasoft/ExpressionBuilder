@@ -17,6 +17,7 @@ public class IsNullOrWhiteSpace : OperationBase
     {
         Expression exprNull = Expression.Constant(null);
         Expression exprEmpty = Expression.Constant(string.Empty);
+        
         return Expression.OrElse(
             Expression.Equal(member, exprNull),
             Expression.AndAlso(

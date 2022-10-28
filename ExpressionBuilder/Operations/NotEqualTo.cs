@@ -17,14 +17,12 @@ public class NotEqualTo : OperationBase
     {
         Expression constant = constant1;
 
-        if (member.Type == typeof(string))
-        {
-            constant = constant1.TrimToLower();
+        if (member.Type != typeof(string)) 
+            return Expression.NotEqual(member, constant);
+        
+        constant = constant1.TrimToLower();
 
-            return Expression.NotEqual(member.TrimToLower(), constant)
-                .AddNullCheck(member);
-        }
-
-        return Expression.NotEqual(member, constant);
+        return Expression.NotEqual(member.TrimToLower(), constant)
+            .AddNullCheck(member);
     }
 }

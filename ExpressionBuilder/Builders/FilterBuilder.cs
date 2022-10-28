@@ -37,14 +37,9 @@ internal class FilterBuilder
         foreach (var statement in statementGroup)
         {
             Expression expr = null;
-            if (IsList(statement))
-            {
-                expr = ProcessListStatement(param, statement);
-            }
-            else
-            {
-                expr = GetExpression(param, statement);
-            }
+            expr = IsList(statement) 
+                ? ProcessListStatement(param, statement) 
+                : GetExpression(param, statement);
 
             expression = expression == null ? expr : CombineExpressions(expression, expr, connector);
             connector = statement.Connector;
@@ -100,9 +95,7 @@ internal class FilterBuilder
         resultExpr = GetSafePropertyMember(param, memberName, resultExpr);
 
         if (statement.Operation.ExpectNullValues && memberName.Contains("."))
-        {
             resultExpr = Expression.OrElse(CheckIfParentIsNull(param, memberName), resultExpr);
-        }
 
         return resultExpr;
     }
@@ -119,27 +112,21 @@ internal class FilterBuilder
         var memberAndNullableUnderlyingTypeDoNotMatch = nullableType != null && memberType != nullableType;
 
         if (constantValueIsNotNull && (memberAndConstantTypeDoNotMatch || memberAndNullableUnderlyingTypeDoNotMatch))
-        {
             throw new PropertyValueTypeMismatchException(member.Member.Name, memberType.Name, constant1.Type.Name);
-        }
     }
 
     private Type GetConstantType(ConstantExpression constant)
     {
         if (constant != null && constant.Value != null && constant.Value.IsGenericList())
-        {
             return constant.Value.GetType().GenericTypeArguments[0];
-        }
 
         return constant != null && constant.Value != null ? constant.Value.GetType() : null;
     }
 
-    public Expression GetSafePropertyMember(ParameterExpression param, string memberName, Expression expr)
+    private Expression GetSafePropertyMember(ParameterExpression param, string memberName, Expression expr)
     {
         if (!memberName.Contains("."))
-        {
             return expr;
-        }
 
         var index = memberName.LastIndexOf(".", StringComparison.InvariantCulture);
         var parentName = memberName.Substring(0, index);
@@ -148,7 +135,7 @@ internal class FilterBuilder
         return GetSafePropertyMember(param, parentName, resultExpr);
     }
 
-    protected Expression CheckIfParentIsNull(ParameterExpression param, string memberName)
+    private Expression CheckIfParentIsNull(ParameterExpression param, string memberName)
     {
         var parentMember = GetParentMember(param, memberName);
         return Expression.Equal(parentMember, Expression.Constant(null));

@@ -15,10 +15,10 @@ public class Settings
                 optional: true,
                 reloadOnChange: true);
 
-        var _config = builder.Build();
+        var config = builder.Build();
 
         settings.SupportedTypes = new List<SupportedType>();
-        foreach (var supportedType in _config.GetSection("supportedTypes").GetChildren())
+        foreach (var supportedType in config.GetSection("supportedTypes").GetChildren())
         {
             var typeGroup = supportedType.GetValue<TypeGroup>("typeGroup");
             var type = Type.GetType(supportedType.GetValue<string>("Type"), false, true);

@@ -18,7 +18,7 @@ public class DoesNotContain : OperationBase
     /// <inheritdoc />
     public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2)
     {
-        Expression constant = constant1.TrimToLower();
+        var constant = constant1.TrimToLower();
 
         return Expression.Not(Expression.Call(member.TrimToLower(), stringContainsMethod, constant))
             .AddNullCheck(member);

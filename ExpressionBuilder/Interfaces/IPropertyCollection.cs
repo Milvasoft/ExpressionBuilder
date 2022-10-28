@@ -13,10 +13,12 @@ public interface IPropertyCollection : ICollection
     /// Type from which the properties are loaded.
     /// </summary>
     Type Type { get; }
+    
     /// <summary>
     /// ResourceManager which the properties descriptions should be gotten from.
     /// </summary>
     ResourceManager ResourceManager { get; }
+    
     /// <summary>
     /// Retrieves a property based on its Id.
     /// </summary>

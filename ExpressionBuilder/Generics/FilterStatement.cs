@@ -115,9 +115,7 @@ public class FilterStatement<TPropertyType> : IFilterStatement
         var supportedOperations = helper.SupportedOperations(typeof(TPropertyType));
 
         if (!supportedOperations.Contains(Operation))
-        {
             throw new UnsupportedOperationException(Operation, typeof(TPropertyType).Name);
-        }
     }
 
     /// <summary>

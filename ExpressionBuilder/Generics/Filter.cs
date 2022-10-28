@@ -37,7 +37,7 @@ public class Filter<TClass> : IFilter, IXmlSerializable where TClass : class
     /// </summary>
     public Filter()
     {
-        _statements = new List<List<IFilterStatement>> { new List<IFilterStatement>() };
+        _statements = new List<List<IFilterStatement>> { new() };
     }
 
     /// <summary>
@@ -91,7 +91,7 @@ public class Filter<TClass> : IFilter, IXmlSerializable where TClass : class
     /// <returns></returns>
     public IFilterStatementConnection By<TPropertyType>(string propertyId, IOperation operation, TPropertyType value, Connector connector)
     {
-        return By(propertyId, operation, value, default(TPropertyType), connector);
+        return By(propertyId, operation, value, default, connector);
     }
 
     /// <summary>
@@ -177,17 +177,13 @@ public class Filter<TClass> : IFilter, IXmlSerializable where TClass : class
         foreach (var statementGroup in _statements)
         {
             if (_statements.Count() > 1)
-            {
                 result.Append("(");
-            }
 
             var groupResult = new System.Text.StringBuilder();
             foreach (var statement in statementGroup)
             {
                 if (groupResult.Length > 0)
-                {
                     groupResult.Append(" " + lastConnector + " ");
-                }
 
                 groupResult.Append(statement);
                 lastConnector = statement.Connector;
@@ -195,9 +191,7 @@ public class Filter<TClass> : IFilter, IXmlSerializable where TClass : class
 
             result.Append(groupResult.ToString().Trim());
             if (_statements.Count > 1)
-            {
                 result.Append(')');
-            }
         }
 
         return result.ToString();

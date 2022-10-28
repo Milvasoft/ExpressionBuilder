@@ -73,9 +73,7 @@ public class OperationHelper : IOperationHelper
         foreach (var supportedType in _settings.SupportedTypes)
         {
             if (supportedType.Type != null)
-            {
                 TypeGroups[supportedType.TypeGroup].Add(supportedType.Type);
-            }
         }
     }
 
@@ -93,16 +91,12 @@ public class OperationHelper : IOperationHelper
 
         var typeGroup = TypeGroup.Default;
         if (TypeGroups.Any(i => i.Value.Any(v => v.Name == typeName)))
-        {
             typeGroup = TypeGroups.FirstOrDefault(i => i.Value.Any(v => v.Name == typeName)).Key;
-        }
 
         supportedOperations.AddRange(Operations.Where(o => o.TypeGroup.HasFlag(typeGroup) && !o.SupportsLists && o.Active));
 
         if (underlyingNullableType != null)
-        {
             supportedOperations.AddRange(Operations.Where(o => o.TypeGroup.HasFlag(TypeGroup.Nullable) && !o.SupportsLists && o.Active));
-        }
 
         return new HashSet<IOperation>(supportedOperations);
     }
@@ -117,9 +111,7 @@ public class OperationHelper : IOperationHelper
         var operation = Operations.SingleOrDefault(o => o.Name == operationName && o.Active);
 
         if (operation == null)
-        {
             throw new OperationNotFoundException(operationName);
-        }
 
         return operation;
     }
@@ -150,14 +142,10 @@ public class OperationHelper : IOperationHelper
     private void DeactivateOperation(string operationName, bool overloadExisting)
     {
         if (!overloadExisting)
-        {
             return;
-        }
 
         var op = _operations.FirstOrDefault(o => string.Compare(o.Name, operationName, StringComparison.InvariantCultureIgnoreCase) == 0);
         if (op != null)
-        {
             op.Active = false;
-        }
     }
 }

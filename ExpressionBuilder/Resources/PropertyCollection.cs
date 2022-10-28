@@ -75,10 +75,8 @@ public class PropertyCollection : IPropertyCollection
     public List<Property> LoadProperties(ResourceManager resourceManager)
     {
         ResourceManager = resourceManager;
-        foreach (Property property in Properties)
-        {
+        foreach (var property in Properties)
             property.Name = resourceManager.GetString(GetPropertyResourceName(property.Id)) ?? property.Name;
-        }
 
         return Properties;
     }
@@ -95,19 +93,16 @@ public class PropertyCollection : IPropertyCollection
     {
         var list = new List<Property>();
         if (_visitedTypes.Contains(type))
-        {
             return list;
-        }
 
         _visitedTypes.Add(type);
 
         const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.Instance;
         var members = type.GetFields(bindingFlags).Cast<MemberInfo>()
             .Concat(type.GetProperties(bindingFlags)).ToArray();
+        
         foreach (var member in members)
-        {
             list.AddRange(GetProperties(member));
-        }
 
         return list;
     }
@@ -129,7 +124,9 @@ public class PropertyCollection : IPropertyCollection
 
     private Type GetMemberType(MemberInfo member)
     {
-        return member.MemberType == MemberTypes.Property ? (member as PropertyInfo)?.PropertyType : (member as FieldInfo).FieldType;
+        return member.MemberType == MemberTypes.Property 
+            ? (member as PropertyInfo)?.PropertyType 
+            : (member as FieldInfo).FieldType;
     }
 
     /// <summary>

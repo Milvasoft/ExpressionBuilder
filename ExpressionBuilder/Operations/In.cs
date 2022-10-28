@@ -17,10 +17,8 @@ public class In : OperationBase
     /// <inheritdoc />
     public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2)
     {
-        if (!(constant1.Value is IList) || !constant1.Value.GetType().IsGenericType)
-        {
+        if (constant1.Value is not IList || !constant1.Value.GetType().IsGenericType)
             throw new ArgumentException("The 'In' operation only supports lists as parameters.");
-        }
 
         var type = constant1.Value.GetType();
         var inInfo = type.GetMethod("Contains", new[] { type.GetGenericArguments()[0] });
@@ -33,10 +31,9 @@ public class In : OperationBase
     {
         var listUnderlyingType = Nullable.GetUnderlyingType(type.GetGenericArguments()[0]);
         var memberUnderlingType = Nullable.GetUnderlyingType(member.Type);
+        
         if (listUnderlyingType != null && memberUnderlingType == null)
-        {
             return Expression.Call(constant1, inInfo, member.Expression);
-        }
 
         return null;
     }
