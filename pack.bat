@@ -1,1 +1,0 @@
-dotnet pack ExpressionBuilder\ExpressionBuilder.csproj -c Release

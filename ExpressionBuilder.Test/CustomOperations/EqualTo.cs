@@ -6,17 +6,17 @@ namespace ExpressionBuilder.Test.CustomOperations
 {
     public class EqualTo : IOperation
     {
-        public string Name { get { return "EqualTo"; } }
+        public string Name => "EqualTo";
 
-        public TypeGroup TypeGroup { get { return TypeGroup.Default | TypeGroup.Boolean | TypeGroup.Date | TypeGroup.Number | TypeGroup.Text; } }
+        public TypeGroup TypeGroup => TypeGroup.Default | TypeGroup.Boolean | TypeGroup.Date | TypeGroup.Number | TypeGroup.Text;
 
-        public int NumberOfValues { get { return 1; } }
+        public int NumberOfValues => 1;
 
         public bool Active { get; set; }
 
-        public bool SupportsLists { get { return false; } }
+        public bool SupportsLists => false;
 
-        public bool ExpectNullValues { get { return false; } }
+        public bool ExpectNullValues => false;
 
         public EqualTo()
         {
