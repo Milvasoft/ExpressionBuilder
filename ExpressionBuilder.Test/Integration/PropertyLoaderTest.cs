@@ -28,38 +28,40 @@ namespace ExpressionBuilder.Test.Integration
             "Id", "Nome", "Sexo", "Salário", "Data de nascimento", "DateOffset", "Idade", "País de origem", "Tipo de contato", "Valor do contato", "Comentários do contato", "Nome do empregador", "Indústria do empregador", "EmployeeReferenceNumber"
         };
 
-        [TestCase("", TestName = "Loading properties' info", Ignore = "Having some trouble making this work properly")]
-        [TestCase("pt-BR", TestName = "Loading properties' info [Portuguese]", Ignore = "Having some trouble making this work properly")]
-        public void PropertyLoaderLoadProperties(string cultureName)
-        {
-            CultureInfo culture = CultureInfo.CreateSpecificCulture(cultureName);
-            Thread.CurrentThread.CurrentCulture = culture;
-            Thread.CurrentThread.CurrentUICulture = culture;
+        // For old .netFramework support
+        // [TestCase("", TestName = "Loading properties' info", Ignore = "Having some trouble making this work properly")]
+        // [TestCase("pt-BR", TestName = "Loading properties' info [Portuguese]", Ignore = "Having some trouble making this work properly")]
+        // public void PropertyLoaderLoadProperties(string cultureName)
+        // {
+        //     CultureInfo culture = CultureInfo.CreateSpecificCulture(cultureName);
+        //     Thread.CurrentThread.CurrentCulture = culture;
+        //     Thread.CurrentThread.CurrentUICulture = culture;
+        //
+        //     IPropertyCollection loader = new PropertyCollection(typeof(Person), Resources.Person.ResourceManager);
+        //     var properties = loader.ToList();
+        //     var ids = properties.Select(p => p.Id);
+        //     var names = properties.Select(p => p.Name);
+        //
+        //     Assert.That(ids, Is.EquivalentTo(propertyIds));
+        //
+        //     Assert.That(names, cultureName == "pt-BR" 
+        //         ? Is.EquivalentTo(propertyNamesptBr) 
+        //         : Is.EquivalentTo(propertyNames));
+        // }
 
-            IPropertyCollection loader = new PropertyCollection(typeof(Person), Resources.Person.ResourceManager);
-            var properties = loader.ToList();
-            var ids = properties.Select(p => p.Id);
-            var names = properties.Select(p => p.Name);
-
-            Assert.That(ids, Is.EquivalentTo(propertyIds));
-
-            Assert.That(names, cultureName == "pt-BR" 
-                ? Is.EquivalentTo(propertyNamesptBr) 
-                : Is.EquivalentTo(propertyNames));
-        }
-
-        [TestCase(TestName = "The string representation of a property should be its name followed by its id", Ignore = "Having some trouble making this work properly")]
-        public void PropertyToString()
-        {
-            var culture = CultureInfo.CreateSpecificCulture(string.Empty);
-            Thread.CurrentThread.CurrentCulture = culture;
-            Thread.CurrentThread.CurrentUICulture = culture;
-
-            IPropertyCollection loader = new PropertyCollection(typeof(Person));
-            var properties = loader.LoadProperties(Resources.Person.ResourceManager);
-            foreach (var property in properties)
-                property.ToString().Should().Be($"{property.Name} ({property.Id})");
-        }
+        // For old .netFramework support
+        // [TestCase(TestName = "The string representation of a property should be its name followed by its id", Ignore = "Having some trouble making this work properly")]
+        // public void PropertyToString()
+        // {
+        //     var culture = CultureInfo.CreateSpecificCulture(string.Empty);
+        //     Thread.CurrentThread.CurrentCulture = culture;
+        //     Thread.CurrentThread.CurrentUICulture = culture;
+        //
+        //     IPropertyCollection loader = new PropertyCollection(typeof(Person));
+        //     var properties = loader.LoadProperties(Resources.Person.ResourceManager);
+        //     foreach (var property in properties)
+        //         property.ToString().Should().Be($"{property.Name} ({property.Id})");
+        // }
 
         [TestCase(TestName = "Checking the loading of classes' properties and fields")]
         public void LoadingPropertiesAndFields()

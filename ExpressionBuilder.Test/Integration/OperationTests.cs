@@ -21,27 +21,28 @@ namespace ExpressionBuilder.Test.Integration
             "começa com", "não contem", "não entre"
         };
 
-        [TestCase("", TestName = "Should load operation description from resource file", Ignore = "Having some trouble making this work properly")]
-        [TestCase("pt-BR", TestName = "Should load operation description from resource file [Portuguese]", Ignore = "Having some trouble making this work properly")]
-        public void ShouldLoadOperationDescriptionFromResourceFile(string cultureName)
-        {
-            var operations = new OperationHelper().Operations;
-            var culture = CultureInfo.CreateSpecificCulture(cultureName);
-            Thread.CurrentThread.CurrentCulture = culture;
-            Thread.CurrentThread.CurrentUICulture = culture;
-
-            if (cultureName == "pt-BR")
-            {
-                Assert.That(
-                    operations.Select(o => o.GetDescription(Resources.Operations.ResourceManager)).OrderBy(o => o),
-                    Is.EquivalentTo(operationsNamesptBR.OrderBy(o => o)));
-            }
-            else
-            {
-                Assert.That(
-                    operations.Select(o => o.GetDescription(Resources.Operations.ResourceManager)).OrderBy(o => o),
-                    Is.EquivalentTo(operationsNames.OrderBy(o => o)));
-            }
-        }
+        // For old .netFramework support
+        // [TestCase("", TestName = "Should load operation description from resource file", Ignore = "Having some trouble making this work properly")]
+        // [TestCase("pt-BR", TestName = "Should load operation description from resource file [Portuguese]", Ignore = "Having some trouble making this work properly")]
+        // public void ShouldLoadOperationDescriptionFromResourceFile(string cultureName)
+        // {
+        //     var operations = new OperationHelper().Operations;
+        //     var culture = CultureInfo.CreateSpecificCulture(cultureName);
+        //     Thread.CurrentThread.CurrentCulture = culture;
+        //     Thread.CurrentThread.CurrentUICulture = culture;
+        //
+        //     if (cultureName == "pt-BR")
+        //     {
+        //         Assert.That(
+        //             operations.Select(o => o.GetDescription(Resources.Operations.ResourceManager)).OrderBy(o => o),
+        //             Is.EquivalentTo(operationsNamesptBR.OrderBy(o => o)));
+        //     }
+        //     else
+        //     {
+        //         Assert.That(
+        //             operations.Select(o => o.GetDescription(Resources.Operations.ResourceManager)).OrderBy(o => o),
+        //             Is.EquivalentTo(operationsNames.OrderBy(o => o)));
+        //     }
+        // }
     }
 }
