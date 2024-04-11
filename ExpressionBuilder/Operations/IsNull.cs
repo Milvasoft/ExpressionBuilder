@@ -13,8 +13,5 @@ public class IsNull : OperationBase
         : base("IsNull", 0, TypeGroup.Text | TypeGroup.Nullable, expectNullValues: true) { }
 
     /// <inheritdoc />
-    public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2)
-    {
-        return Expression.Equal(member, Expression.Constant(null));
-    }
+    public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2) => Expression.Equal(member, Expression.Constant(null));
 }

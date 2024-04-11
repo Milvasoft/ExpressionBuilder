@@ -9,7 +9,7 @@ namespace ExpressionBuilder.Operations;
 /// </summary>
 public class Contains : OperationBase
 {
-    private readonly MethodInfo stringContainsMethod = typeof(string).GetMethod("Contains", new[] { typeof(string) });
+    private readonly MethodInfo _stringContainsMethod = typeof(string).GetMethod("Contains", [typeof(string)]);
 
     /// <inheritdoc />
     public Contains()
@@ -20,7 +20,7 @@ public class Contains : OperationBase
     {
         Expression constant = constant1.TrimToLower();
 
-        return Expression.Call(member.TrimToLower(), stringContainsMethod, constant)
+        return Expression.Call(member.TrimToLower(), _stringContainsMethod, constant)
             .AddNullCheck(member);
     }
 }

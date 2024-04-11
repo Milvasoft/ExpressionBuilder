@@ -20,7 +20,7 @@ public class NotIn : OperationBase
             throw new ArgumentException("The 'NotIn' operation only supports lists as parameters.");
 
         var type = constant1.Value.GetType();
-        var inInfo = type.GetMethod("Contains", new[] { type.GetGenericArguments()[0] });
+        var inInfo = type.GetMethod("Contains", [type.GetGenericArguments()[0]]);
         var contains = Expression.Call(constant1, inInfo, member);
         return Expression.Not(contains);
     }

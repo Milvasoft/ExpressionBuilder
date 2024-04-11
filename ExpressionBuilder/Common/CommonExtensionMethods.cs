@@ -5,8 +5,8 @@ namespace ExpressionBuilder.Common;
 
 public static class CommonExtensionMethods
 {
-    private static readonly MethodInfo trimMethod = typeof(string).GetMethod("Trim", new Type[0]);
-    private static readonly MethodInfo toLowerMethod = typeof(string).GetMethod("ToLower", new Type[0]);
+    private static readonly MethodInfo _trimMethod = typeof(string).GetMethod("Trim", []);
+    private static readonly MethodInfo _toLowerMethod = typeof(string).GetMethod("ToLower", []);
 
     /// <summary>
     /// Gets a member expression for an specific property
@@ -14,21 +14,18 @@ public static class CommonExtensionMethods
     /// <param name="param"></param>
     /// <param name="propertyName"></param>
     /// <returns></returns>
-    public static MemberExpression GetMemberExpression(this ParameterExpression param, string propertyName)
-    {
-        return GetMemberExpression((Expression)param, propertyName);
-    }
+    public static MemberExpression GetMemberExpression(this ParameterExpression param, string propertyName) => GetMemberExpression((Expression)param, propertyName);
 
     private static MemberExpression GetMemberExpression(Expression param, string propertyName)
     {
-        if (!propertyName.Contains("."))
+        if (!propertyName.Contains('.'))
         {
             return Expression.PropertyOrField(param, propertyName);
         }
 
-        var index = propertyName.IndexOf(".");
-        var subParam = Expression.PropertyOrField(param, propertyName.Substring(0, index));
-        return GetMemberExpression(subParam, propertyName.Substring(index + 1));
+        var index = propertyName.IndexOf('.');
+        var subParam = Expression.PropertyOrField(param, propertyName[..index]);
+        return GetMemberExpression(subParam, propertyName[(index + 1)..]);
     }
 
     /// <summary>
@@ -38,8 +35,8 @@ public static class CommonExtensionMethods
     /// <returns></returns>
     public static Expression TrimToLower(this MemberExpression member)
     {
-        var trimMemberCall = Expression.Call(member, trimMethod);
-        return Expression.Call(trimMemberCall, toLowerMethod);
+        var trimMemberCall = Expression.Call(member, _trimMethod);
+        return Expression.Call(trimMemberCall, _toLowerMethod);
     }
 
     /// <summary>
@@ -49,8 +46,8 @@ public static class CommonExtensionMethods
     /// <returns></returns>
     public static Expression TrimToLower(this ConstantExpression constant)
     {
-        var trimMemberCall = Expression.Call(constant, trimMethod);
-        return Expression.Call(trimMemberCall, toLowerMethod);
+        var trimMemberCall = Expression.Call(constant, _trimMethod);
+        return Expression.Call(trimMemberCall, _toLowerMethod);
     }
 
     /// <summary>

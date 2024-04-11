@@ -15,7 +15,7 @@ public static class FilterFactory
     /// <returns></returns>
     public static IFilter Create(Type type)
     {
-        Type[] typeArgs = { type };
+        Type[] typeArgs = [type];
         var filterType = typeof(Filter<>).MakeGenericType(typeArgs);
         return (IFilter)Activator.CreateInstance(filterType);
     }

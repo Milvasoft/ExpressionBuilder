@@ -17,7 +17,7 @@ public class Settings
 
         var config = builder.Build();
 
-        settings.SupportedTypes = new List<SupportedType>();
+        settings.SupportedTypes = [];
         foreach (var supportedType in config.GetSection("supportedTypes").GetChildren())
         {
             var typeGroup = supportedType.GetValue<TypeGroup>("typeGroup");

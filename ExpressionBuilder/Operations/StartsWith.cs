@@ -9,7 +9,7 @@ namespace ExpressionBuilder.Operations;
 /// </summary>
 public class StartsWith : OperationBase
 {
-    private readonly MethodInfo startsWithMethod = typeof(string).GetMethod("StartsWith", new[] { typeof(string) });
+    private readonly MethodInfo _startsWithMethod = typeof(string).GetMethod("StartsWith", [typeof(string)]);
 
     /// <inheritdoc />
     public StartsWith()
@@ -20,7 +20,7 @@ public class StartsWith : OperationBase
     {
         Expression constant = constant1.TrimToLower();
 
-        return Expression.Call(member.TrimToLower(), startsWithMethod, constant)
+        return Expression.Call(member.TrimToLower(), _startsWithMethod, constant)
             .AddNullCheck(member);
     }
 }

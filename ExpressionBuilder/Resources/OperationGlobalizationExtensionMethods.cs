@@ -16,8 +16,5 @@ public static class OperationGlobalizationExtensionMethods
     /// <param name="operation">Operation which description should be returned.</param>
     /// <param name="resourceManager">ResourceManager where the description can be found.</param>
     /// <returns></returns>
-    public static string GetDescription(this IOperation operation, ResourceManager resourceManager)
-    {
-        return resourceManager.GetString(operation.Name) ?? operation.Name;
-    }
+    public static string GetDescription(this IOperation operation, ResourceManager resourceManager) => resourceManager.GetString(operation.Name) ?? operation.Name;
 }

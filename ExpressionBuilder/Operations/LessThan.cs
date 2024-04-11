@@ -13,8 +13,5 @@ public class LessThan : OperationBase
         : base("LessThan", 1, TypeGroup.Number | TypeGroup.Date) { }
 
     /// <inheritdoc />
-    public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2)
-    {
-        return Expression.LessThan(member, constant1);
-    }
+    public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2) => Expression.LessThan(member, constant1);
 }

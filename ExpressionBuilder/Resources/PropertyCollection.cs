@@ -27,7 +27,7 @@ public class PropertyCollection : IPropertyCollection
     /// <summary>
     /// Gets the number of <see cref="Property" /> contained in the <see cref="PropertyCollection" />.
     /// </summary>
-    public int Count => Properties.Count();
+    public int Count => Properties.Count;
 
     /// <summary>
     ///
@@ -44,7 +44,7 @@ public class PropertyCollection : IPropertyCollection
     /// </summary>
     /// <param name="propertyId">Property conventionalized <see cref="Property.Id" />.</param>
     /// <returns></returns>
-    public Property this[string propertyId] { get { return Properties.FirstOrDefault(p => p.Id.Equals(propertyId)); } }
+    public Property this[string propertyId] { get { return Properties.Find(p => p.Id.Equals(propertyId)); } }
 
     /// <summary>
     /// Instantiates a new <see cref="PropertyCollection" />.
@@ -53,7 +53,7 @@ public class PropertyCollection : IPropertyCollection
     public PropertyCollection(Type type)
     {
         Type = type;
-        _visitedTypes = new HashSet<Type>();
+        _visitedTypes = [];
         Properties = LoadProperties(Type);
     }
 
@@ -81,13 +81,10 @@ public class PropertyCollection : IPropertyCollection
         return Properties;
     }
 
-    private string GetPropertyResourceName(string propertyConventionName)
-    {
-        return propertyConventionName
+    private static string GetPropertyResourceName(string propertyConventionName) => propertyConventionName
             .Replace("[", "_")
             .Replace("]", "_")
             .Replace(".", "_");
-    }
 
     private List<Property> LoadProperties(Type type)
     {
@@ -100,7 +97,7 @@ public class PropertyCollection : IPropertyCollection
         const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.Instance;
         var members = type.GetFields(bindingFlags).Cast<MemberInfo>()
             .Concat(type.GetProperties(bindingFlags)).ToArray();
-        
+
         foreach (var member in members)
             list.AddRange(GetProperties(member));
 
@@ -112,7 +109,7 @@ public class PropertyCollection : IPropertyCollection
         var memberType = GetMemberType(member);
 
         if (memberType.IsValueType || memberType == typeof(string))
-            return new List<Property> { new (member.Name, member.Name, member) };
+            return [new(member.Name, member.Name, member)];
 
         if (memberType.IsGenericType && typeof(IEnumerable).IsAssignableFrom(memberType))
             return LoadProperties(memberType.GetGenericArguments()[0])
@@ -122,12 +119,9 @@ public class PropertyCollection : IPropertyCollection
             .Select(p => new Property(member.Name + "." + p.Id, p.Name, p.Info));
     }
 
-    private Type GetMemberType(MemberInfo member)
-    {
-        return member.MemberType == MemberTypes.Property 
-            ? (member as PropertyInfo)?.PropertyType 
+    private static Type GetMemberType(MemberInfo member) => member.MemberType == MemberTypes.Property
+            ? (member as PropertyInfo)?.PropertyType
             : (member as FieldInfo).FieldType;
-    }
 
     /// <summary>
     /// Copies the elements of the <see cref="PropertyCollection" /> to an System.Array,
@@ -138,19 +132,13 @@ public class PropertyCollection : IPropertyCollection
     /// from System.Collections.ICollection. The System.Array must have zero-based indexing.
     /// </param>
     /// <param name="index">The zero-based index in array at which copying begins.</param>
-    public void CopyTo(Array array, int index)
-    {
-        Properties.CopyTo((Property[])array, index);
-    }
+    public void CopyTo(Array array, int index) => Properties.CopyTo((Property[])array, index);
 
     /// <summary>
     /// Returns an enumerator that iterates through a collection.
     /// </summary>
     /// <returns></returns>
-    public IEnumerator GetEnumerator()
-    {
-        return Properties.GetEnumerator();
-    }
+    public IEnumerator GetEnumerator() => Properties.GetEnumerator();
 
     /// <summary>
     /// Converts the collection into a list.

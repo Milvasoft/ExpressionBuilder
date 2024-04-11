@@ -41,6 +41,11 @@ public class FilterStatement<TPropertyType> : IFilterStatement
     /// <summary>
     /// Instantiates a new <see cref="FilterStatement{TPropertyType}" />.
     /// </summary>
+    public FilterStatement() { }
+
+    /// <summary>
+    /// Instantiates a new <see cref="FilterStatement{TPropertyType}" />.
+    /// </summary>
     /// <param name="propertyId"></param>
     /// <param name="operation"></param>
     /// <param name="value"></param>
@@ -75,11 +80,6 @@ public class FilterStatement<TPropertyType> : IFilterStatement
             Value2 = value2;
         }
     }
-
-    /// <summary>
-    /// Instantiates a new <see cref="FilterStatement{TPropertyType}" />.
-    /// </summary>
-    public FilterStatement() { }
 
     /// <summary>
     /// Validates the FilterStatement regarding the number of provided values and supported operations.
@@ -122,29 +122,18 @@ public class FilterStatement<TPropertyType> : IFilterStatement
     /// String representation of <see cref="FilterStatement{TPropertyType}" />.
     /// </summary>
     /// <returns></returns>
-    public override string ToString()
+    public override string ToString() => Operation.NumberOfValues switch
     {
-        switch (Operation.NumberOfValues)
-        {
-            case 0:
-                return $"{PropertyId} {Operation}";
-
-            case 2:
-                return $"{PropertyId} {Operation} {Value} And {Value2}";
-
-            default:
-                return $"{PropertyId} {Operation} {Value}";
-        }
-    }
+        0 => $"{PropertyId} {Operation}",
+        2 => $"{PropertyId} {Operation} {Value} And {Value2}",
+        _ => $"{PropertyId} {Operation} {Value}",
+    };
 
     /// <summary>
     ///
     /// </summary>
     /// <returns></returns>
-    public XmlSchema GetSchema()
-    {
-        return null;
-    }
+    public XmlSchema GetSchema() => null;
 
     /// <summary>
     ///  Generates an object from its XML representation.
@@ -155,8 +144,8 @@ public class FilterStatement<TPropertyType> : IFilterStatement
         reader.Read();
         PropertyId = reader.ReadElementContentAsString();
         Operation = Operations.Operation.ByName(reader.ReadElementContentAsString());
-        Value = typeof(TPropertyType).IsEnum 
-            ? Enum.Parse(typeof(TPropertyType), reader.ReadElementContentAsString()) 
+        Value = typeof(TPropertyType).IsEnum
+            ? Enum.Parse(typeof(TPropertyType), reader.ReadElementContentAsString())
             : Convert.ChangeType(reader.ReadElementContentAsString(), typeof(TPropertyType));
 
         Connector = (Connector)Enum.Parse(typeof(Connector), reader.ReadElementContentAsString());

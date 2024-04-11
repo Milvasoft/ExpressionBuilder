@@ -1,6 +1,8 @@
 ﻿using ExpressionBuilder.Builders;
 using ExpressionBuilder.Common;
 using ExpressionBuilder.Interfaces;
+using System.Linq.Expressions;
+using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -30,14 +32,14 @@ public class Filter<TClass> : IFilter, IXmlSerializable where TClass : class
     /// </summary>
     public IEnumerable<IEnumerable<IFilterStatement>> Statements => _statements.ToArray();
 
-    private List<IFilterStatement> CurrentStatementGroup => _statements.Last();
+    private List<IFilterStatement> CurrentStatementGroup => _statements[^1];
 
     /// <summary>
     /// Instantiates a new <see cref="Filter{TClass}" />
     /// </summary>
     public Filter()
     {
-        _statements = new List<List<IFilterStatement>> { new() };
+        _statements = [[]];
     }
 
     /// <summary>
@@ -48,10 +50,7 @@ public class Filter<TClass> : IFilter, IXmlSerializable where TClass : class
     /// <param name="operation">Operation to be used.</param>
     /// <param name="connector"></param>
     /// <returns></returns>
-    public IFilterStatementConnection By(string propertyId, IOperation operation, Connector connector)
-    {
-        return By<string>(propertyId, operation, null, null, connector);
-    }
+    public IFilterStatementConnection By(string propertyId, IOperation operation, Connector connector) => By<string>(propertyId, operation, null, null, connector);
 
     /// <summary>
     /// Adds a new <see cref="FilterStatement{TPropertyType}" /> to the <see cref="Filter{TClass}" />.
@@ -60,10 +59,7 @@ public class Filter<TClass> : IFilter, IXmlSerializable where TClass : class
     /// <param name="propertyId">Property identifier conventionalized by for the Expression Builder.</param>
     /// <param name="operation">Operation to be used.</param>
     /// <returns></returns>
-    public IFilterStatementConnection By(string propertyId, IOperation operation)
-    {
-        return By<string>(propertyId, operation, null, null, Connector.And);
-    }
+    public IFilterStatementConnection By(string propertyId, IOperation operation) => By<string>(propertyId, operation, null, null, Connector.And);
 
     /// <summary>
     /// Adds a new <see cref="FilterStatement{TPropertyType}" /> to the <see cref="Filter{TClass}" />.
@@ -74,10 +70,7 @@ public class Filter<TClass> : IFilter, IXmlSerializable where TClass : class
     /// <param name="value"></param>
     /// <param name="value2"></param>
     /// <returns></returns>
-    public IFilterStatementConnection By<TPropertyType>(string propertyId, IOperation operation, TPropertyType value)
-    {
-        return By(propertyId, operation, value, default(TPropertyType));
-    }
+    public IFilterStatementConnection By<TPropertyType>(string propertyId, IOperation operation, TPropertyType value) => By(propertyId, operation, value, default(TPropertyType));
 
     /// <summary>
     /// Adds a new <see cref="FilterStatement{TPropertyType}" /> to the <see cref="Filter{TClass}" />.
@@ -89,10 +82,7 @@ public class Filter<TClass> : IFilter, IXmlSerializable where TClass : class
     /// <param name="value2"></param>
     /// <param name="connector"></param>
     /// <returns></returns>
-    public IFilterStatementConnection By<TPropertyType>(string propertyId, IOperation operation, TPropertyType value, Connector connector)
-    {
-        return By(propertyId, operation, value, default, connector);
-    }
+    public IFilterStatementConnection By<TPropertyType>(string propertyId, IOperation operation, TPropertyType value, Connector connector) => By(propertyId, operation, value, default, connector);
 
     /// <summary>
     /// Adds a new <see cref="FilterStatement{TPropertyType}" /> to the <see cref="Filter{TClass}" />.
@@ -103,10 +93,7 @@ public class Filter<TClass> : IFilter, IXmlSerializable where TClass : class
     /// <param name="value"></param>
     /// <param name="value2"></param>
     /// <returns></returns>
-    public IFilterStatementConnection By<TPropertyType>(string propertyId, IOperation operation, TPropertyType value, TPropertyType value2)
-    {
-        return By(propertyId, operation, value, value2, Connector.And);
-    }
+    public IFilterStatementConnection By<TPropertyType>(string propertyId, IOperation operation, TPropertyType value, TPropertyType value2) => By(propertyId, operation, value, value2, Connector.And);
 
     /// <summary>
     /// Adds a new <see cref="FilterStatement{TPropertyType}" /> to the <see cref="Filter{TClass}" />.
@@ -130,9 +117,9 @@ public class Filter<TClass> : IFilter, IXmlSerializable where TClass : class
     /// </summary>
     public void StartGroup()
     {
-        if (CurrentStatementGroup.Any())
+        if (CurrentStatementGroup.Count != 0)
         {
-            _statements.Add(new List<IFilterStatement>());
+            _statements.Add([]);
         }
     }
 
@@ -142,7 +129,7 @@ public class Filter<TClass> : IFilter, IXmlSerializable where TClass : class
     public void Clear()
     {
         _statements.Clear();
-        _statements.Add(new List<IFilterStatement>());
+        _statements.Add([]);
     }
 
     /// <summary>
@@ -151,18 +138,16 @@ public class Filter<TClass> : IFilter, IXmlSerializable where TClass : class
     /// <param name="filter"></param>
     public static implicit operator Func<TClass, bool>(Filter<TClass> filter)
     {
-        var builder = new FilterBuilder();
-        return builder.GetExpression<TClass>(filter).Compile();
+        return FilterBuilder.GetExpression<TClass>(filter).Compile();
     }
 
     /// <summary>
-    /// Implicitly converts a <see cref="Filter{TClass}" /> into a <see cref="System.Linq.Expressions.Expression{Func{TClass, TResult}}" />.
+    /// Implicitly converts a <see cref="Filter{TClass}" /> into a <see cref="Expression{Func{TClass, TResult}}" />.
     /// </summary>
     /// <param name="filter"></param>
-    public static implicit operator System.Linq.Expressions.Expression<Func<TClass, bool>>(Filter<TClass> filter)
+    public static implicit operator Expression<Func<TClass, bool>>(Filter<TClass> filter)
     {
-        var builder = new FilterBuilder();
-        return builder.GetExpression<TClass>(filter);
+        return FilterBuilder.GetExpression<TClass>(filter);
     }
 
     /// <summary>
@@ -171,15 +156,15 @@ public class Filter<TClass> : IFilter, IXmlSerializable where TClass : class
     /// <returns></returns>
     public override string ToString()
     {
-        var result = new System.Text.StringBuilder();
+        var result = new StringBuilder();
         var lastConnector = Connector.And;
 
         foreach (var statementGroup in _statements)
         {
-            if (_statements.Count() > 1)
-                result.Append("(");
+            if (_statements.Count > 1)
+                result.Append('(');
 
-            var groupResult = new System.Text.StringBuilder();
+            var groupResult = new StringBuilder();
             foreach (var statement in statementGroup)
             {
                 if (groupResult.Length > 0)
@@ -201,10 +186,7 @@ public class Filter<TClass> : IFilter, IXmlSerializable where TClass : class
     ///
     /// </summary>
     /// <returns></returns>
-    public XmlSchema GetSchema()
-    {
-        return null;
-    }
+    public XmlSchema GetSchema() => null;
 
     /// <summary>
     ///  Generates an object from its XML representation.
@@ -217,9 +199,9 @@ public class Filter<TClass> : IFilter, IXmlSerializable where TClass : class
             if (reader.Name.Equals("StatementsGroup") && reader.IsStartElement())
                 StartGroup();
 
-            if (!reader.Name.StartsWith("FilterStatementOf")) 
+            if (!reader.Name.StartsWith("FilterStatementOf"))
                 continue;
-            
+
             var type = reader.GetAttribute("Type");
             var filterType = typeof(FilterStatement<>).MakeGenericType(Type.GetType(type));
             var serializer = new XmlSerializer(filterType);
@@ -244,6 +226,7 @@ public class Filter<TClass> : IFilter, IXmlSerializable where TClass : class
                 var serializer = new XmlSerializer(statement.GetType());
                 serializer.Serialize(writer, statement);
             }
+
             writer.WriteEndElement();
         }
 

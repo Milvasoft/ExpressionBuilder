@@ -8,11 +8,11 @@ namespace ExpressionBuilder.Builders;
 
 internal class FilterBuilder
 {
-    internal FilterBuilder()
+    protected FilterBuilder()
     {
     }
 
-    public Expression<Func<T, bool>> GetExpression<T>(IFilter filter) where T : class
+    public static Expression<Func<T, bool>> GetExpression<T>(IFilter filter) where T : class
     {
         var param = Expression.Parameter(typeof(T), "x");
         Expression expression = null;
@@ -26,19 +26,19 @@ internal class FilterBuilder
             connector = statementGroupConnector;
         }
 
-        expression = expression ?? Expression.Constant(true);
+        expression ??= Expression.Constant(true);
 
         return Expression.Lambda<Func<T, bool>>(expression, param);
     }
 
-    private Expression GetPartialExpression(ParameterExpression param, ref Connector connector, IEnumerable<IFilterStatement> statementGroup)
+    private static Expression GetPartialExpression(ParameterExpression param, ref Connector connector, IEnumerable<IFilterStatement> statementGroup)
     {
         Expression expression = null;
         foreach (var statement in statementGroup)
         {
             Expression expr = null;
-            expr = IsList(statement) 
-                ? ProcessListStatement(param, statement) 
+            expr = IsList(statement)
+                ? ProcessListStatement(param, statement)
                 : GetExpression(param, statement);
 
             expression = expression == null ? expr : CombineExpressions(expression, expr, connector);
@@ -48,32 +48,26 @@ internal class FilterBuilder
         return expression;
     }
 
-    private bool IsList(IFilterStatement statement)
-    {
-        return statement.PropertyId.Contains("[") && statement.PropertyId.Contains("]");
-    }
+    private static bool IsList(IFilterStatement statement) => statement.PropertyId.Contains('[') && statement.PropertyId.Contains(']');
 
-    private Expression CombineExpressions(Expression expr1, Expression expr2, Connector connector)
-    {
-        return connector == Connector.And ? Expression.AndAlso(expr1, expr2) : Expression.OrElse(expr1, expr2);
-    }
+    private static BinaryExpression CombineExpressions(Expression expr1, Expression expr2, Connector connector) => connector == Connector.And ? Expression.AndAlso(expr1, expr2) : Expression.OrElse(expr1, expr2);
 
-    private Expression ProcessListStatement(ParameterExpression param, IFilterStatement statement)
+    private static MethodCallExpression ProcessListStatement(ParameterExpression param, IFilterStatement statement)
     {
-        var basePropertyName = statement.PropertyId.Substring(0, statement.PropertyId.IndexOf("["));
-        var propertyName = statement.PropertyId.Substring(statement.PropertyId.IndexOf("[") + 1).Replace("]", string.Empty);
+        var basePropertyName = statement.PropertyId[..statement.PropertyId.IndexOf('[')];
+        var propertyName = statement.PropertyId[(statement.PropertyId.IndexOf('[') + 1)..].Replace("]", string.Empty);
 
         var type = param.Type.GetProperty(basePropertyName).PropertyType.GetGenericArguments()[0];
         ParameterExpression listItemParam = Expression.Parameter(type, "i");
         var lambda = Expression.Lambda(GetExpression(listItemParam, statement, propertyName), listItemParam);
         var member = param.GetMemberExpression(basePropertyName);
         var enumerableType = typeof(Enumerable);
-        var anyInfo = enumerableType.GetMethods(BindingFlags.Static | BindingFlags.Public).First(m => m.Name == "Any" && m.GetParameters().Count() == 2);
+        var anyInfo = enumerableType.GetMethods(BindingFlags.Static | BindingFlags.Public).First(m => m.Name == "Any" && m.GetParameters().Length == 2);
         anyInfo = anyInfo.MakeGenericMethod(type);
         return Expression.Call(anyInfo, member, lambda);
     }
 
-    private Expression GetExpression(ParameterExpression param, IFilterStatement statement, string propertyName = null)
+    private static Expression GetExpression(ParameterExpression param, IFilterStatement statement, string propertyName = null)
     {
         Expression resultExpr = null;
         var memberName = propertyName ?? statement.PropertyId;
@@ -94,13 +88,13 @@ internal class FilterBuilder
         resultExpr = resultExpr != null ? Expression.AndAlso(resultExpr, safeStringExpression) : safeStringExpression;
         resultExpr = GetSafePropertyMember(param, memberName, resultExpr);
 
-        if (statement.Operation.ExpectNullValues && memberName.Contains("."))
+        if (statement.Operation.ExpectNullValues && memberName.Contains('.'))
             resultExpr = Expression.OrElse(CheckIfParentIsNull(param, memberName), resultExpr);
 
         return resultExpr;
     }
 
-    private void CheckPropertyValueMismatch(MemberExpression member, ConstantExpression constant1)
+    private static void CheckPropertyValueMismatch(MemberExpression member, ConstantExpression constant1)
     {
         var memberType = member.Member.MemberType == MemberTypes.Property ? (member.Member as PropertyInfo).PropertyType : (member.Member as FieldInfo).FieldType;
 
@@ -115,7 +109,7 @@ internal class FilterBuilder
             throw new PropertyValueTypeMismatchException(member.Member.Name, memberType.Name, constant1.Type.Name);
     }
 
-    private Type GetConstantType(ConstantExpression constant)
+    private static Type GetConstantType(ConstantExpression constant)
     {
         if (constant != null && constant.Value != null && constant.Value.IsGenericList())
             return constant.Value.GetType().GenericTypeArguments[0];
@@ -123,27 +117,27 @@ internal class FilterBuilder
         return constant != null && constant.Value != null ? constant.Value.GetType() : null;
     }
 
-    private Expression GetSafePropertyMember(ParameterExpression param, string memberName, Expression expr)
+    private static Expression GetSafePropertyMember(ParameterExpression param, string memberName, Expression expr)
     {
-        if (!memberName.Contains("."))
+        if (!memberName.Contains('.'))
             return expr;
 
-        var index = memberName.LastIndexOf(".", StringComparison.InvariantCulture);
-        var parentName = memberName.Substring(0, index);
+        var index = memberName.LastIndexOf('.');
+        var parentName = memberName[..index];
         var subParam = param.GetMemberExpression(parentName);
         var resultExpr = Expression.AndAlso(Expression.NotEqual(subParam, Expression.Constant(null)), expr);
         return GetSafePropertyMember(param, parentName, resultExpr);
     }
 
-    private Expression CheckIfParentIsNull(ParameterExpression param, string memberName)
+    private static BinaryExpression CheckIfParentIsNull(ParameterExpression param, string memberName)
     {
         var parentMember = GetParentMember(param, memberName);
         return Expression.Equal(parentMember, Expression.Constant(null));
     }
 
-    private MemberExpression GetParentMember(ParameterExpression param, string memberName)
+    private static MemberExpression GetParentMember(ParameterExpression param, string memberName)
     {
-        var parentName = memberName.Substring(0, memberName.IndexOf("."));
+        var parentName = memberName[..memberName.IndexOf('.')];
         return param.GetMemberExpression(parentName);
     }
 }

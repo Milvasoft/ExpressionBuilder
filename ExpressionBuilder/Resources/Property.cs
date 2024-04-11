@@ -35,8 +35,5 @@ public class Property
     /// String representation of <see cref="Property" />.
     /// </summary>
     /// <returns></returns>
-    public override string ToString()
-    {
-        return $"{Name} ({Id})";
-    }
+    public override string ToString() => $"{Name} ({Id})";
 }

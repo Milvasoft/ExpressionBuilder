@@ -1,7 +1,7 @@
 ﻿using System;
 
-namespace ExpressionBuilder.Test.Models
-{
+namespace ExpressionBuilder.Test.Models;
+
 	public enum ContactType
 	{
 		Telephone,
@@ -14,4 +14,3 @@ namespace ExpressionBuilder.Test.Models
 		public string Value { get; set; }
 		public string Comments { get; set; }
 	}
-}

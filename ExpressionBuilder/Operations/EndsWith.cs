@@ -9,7 +9,7 @@ namespace ExpressionBuilder.Operations;
 /// </summary>
 public class EndsWith : OperationBase
 {
-    private readonly MethodInfo endsWithMethod = typeof(string).GetMethod("EndsWith", new[] { typeof(string) });
+    private readonly MethodInfo _endsWithMethod = typeof(string).GetMethod("EndsWith", [typeof(string)]);
 
     /// <inheritdoc />
     public EndsWith()
@@ -20,7 +20,7 @@ public class EndsWith : OperationBase
     {
         var constant = constant1.TrimToLower();
 
-        return Expression.Call(member.TrimToLower(), endsWithMethod, constant)
+        return Expression.Call(member.TrimToLower(), _endsWithMethod, constant)
             .AddNullCheck(member);
     }
 }

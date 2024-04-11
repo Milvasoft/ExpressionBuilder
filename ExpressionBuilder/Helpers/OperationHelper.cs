@@ -14,7 +14,7 @@ public class OperationHelper : IOperationHelper
 
     private readonly Settings _settings;
 
-    private readonly Dictionary<TypeGroup, HashSet<Type>> TypeGroups;
+    private readonly Dictionary<TypeGroup, HashSet<Type>> _typeGroups;
 
     static OperationHelper()
     {
@@ -26,19 +26,21 @@ public class OperationHelper : IOperationHelper
     /// </summary>
     public static void LoadDefaultOperations()
     {
-        var @interface = typeof(IOperation);
+        var operationInterface = typeof(IOperation);
+
         var operationsFound = AppDomain.CurrentDomain.GetAssemblies()
-            .Where(a => a.DefinedTypes.Any(t => t.Namespace == "ExpressionBuilder.Operations"))
-            .SelectMany(s => s.GetTypes())
-            .Where(p => @interface.IsAssignableFrom(p) && p.IsClass && !p.IsAbstract)
-            .Select(t => (IOperation)Activator.CreateInstance(t));
+                                                     .Where(a => a.DefinedTypes.Any(t => t.Namespace == "ExpressionBuilder.Operations"))
+                                                     .SelectMany(s => s.GetTypes())
+                                                     .Where(p => operationInterface.IsAssignableFrom(p) && p.IsClass && !p.IsAbstract)
+                                                     .Select(t => (IOperation)Activator.CreateInstance(t));
+
         _operations = new HashSet<IOperation>(operationsFound!, new OperationEqualityComparer());
     }
 
     /// <summary>
     /// List of all operations loaded so far.
     /// </summary>
-    public IEnumerable<IOperation> Operations => _operations.ToArray();
+    public IEnumerable<IOperation> Operations => [.. _operations];
 
     /// <summary>
     /// Instantiates a new OperationHelper.
@@ -46,11 +48,13 @@ public class OperationHelper : IOperationHelper
     public OperationHelper()
     {
         _settings = new Settings();
+
         Settings.LoadSettings(_settings);
-        TypeGroups = new Dictionary<TypeGroup, HashSet<Type>>
+
+        _typeGroups = new Dictionary<TypeGroup, HashSet<Type>>
         {
             { TypeGroup.Text, new HashSet<Type> { typeof(string), typeof(char) } },
-            { TypeGroup.Number, new HashSet<Type> { typeof(int), typeof(uint), typeof(byte), typeof(sbyte), typeof(short), typeof(ushort), typeof(long), typeof(ulong), typeof(Single), typeof(double), typeof(decimal) } },
+            { TypeGroup.Number, new HashSet<Type> { typeof(int), typeof(uint), typeof(byte), typeof(sbyte), typeof(short), typeof(ushort), typeof(long), typeof(ulong), typeof(float), typeof(double), typeof(decimal) } },
             { TypeGroup.Boolean, new HashSet<Type> { typeof(bool) } },
             { TypeGroup.Date, new HashSet<Type> { typeof(DateTime) } },
             { TypeGroup.Nullable, new HashSet<Type> { typeof(Nullable<>), typeof(string) } }
@@ -73,7 +77,7 @@ public class OperationHelper : IOperationHelper
         foreach (var supportedType in _settings.SupportedTypes)
         {
             if (supportedType.Type != null)
-                TypeGroups[supportedType.TypeGroup].Add(supportedType.Type);
+                _typeGroups[supportedType.TypeGroup].Add(supportedType.Type);
         }
     }
 
@@ -90,8 +94,8 @@ public class OperationHelper : IOperationHelper
         }
 
         var typeGroup = TypeGroup.Default;
-        if (TypeGroups.Any(i => i.Value.Any(v => v.Name == typeName)))
-            typeGroup = TypeGroups.FirstOrDefault(i => i.Value.Any(v => v.Name == typeName)).Key;
+        if (_typeGroups.Any(i => i.Value.Any(v => v.Name == typeName)))
+            typeGroup = _typeGroups.FirstOrDefault(i => i.Value.Any(v => v.Name == typeName)).Key;
 
         supportedOperations.AddRange(Operations.Where(o => o.TypeGroup.HasFlag(typeGroup) && !o.SupportsLists && o.Active));
 
@@ -110,20 +114,14 @@ public class OperationHelper : IOperationHelper
     {
         var operation = Operations.SingleOrDefault(o => o.Name == operationName && o.Active);
 
-        if (operation == null)
-            throw new OperationNotFoundException(operationName);
-
-        return operation;
+        return operation ?? throw new OperationNotFoundException(operationName);
     }
 
     /// <summary>
     /// Loads a list of custom operations into the <see cref="Operations"></see> list.
     /// </summary>
     /// <param name="operations">List of operations to load.</param>
-    public void LoadOperations(List<IOperation> operations)
-    {
-        LoadOperations(operations, false);
-    }
+    public void LoadOperations(List<IOperation> operations) => LoadOperations(operations, false);
 
     /// <summary>
     /// Loads a list of custom operations into the <see cref="Operations"></see> list.
@@ -139,7 +137,7 @@ public class OperationHelper : IOperationHelper
         }
     }
 
-    private void DeactivateOperation(string operationName, bool overloadExisting)
+    private static void DeactivateOperation(string operationName, bool overloadExisting)
     {
         if (!overloadExisting)
             return;
