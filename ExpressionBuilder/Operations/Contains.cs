@@ -9,11 +9,11 @@ namespace ExpressionBuilder.Operations;
 /// </summary>
 public class Contains : OperationBase
 {
-    private readonly MethodInfo _stringContainsMethod = typeof(string).GetMethod("Contains", [typeof(string)]);
+    private readonly MethodInfo _stringContainsMethod = typeof(string).GetMethod(nameof(string.Contains), [typeof(string)]);
+    public static int ValueCount { get; } = 1;
 
     /// <inheritdoc />
-    public Contains()
-        : base("Contains", 1, TypeGroup.Text) { }
+    public Contains() : base(nameof(Contains), ValueCount, TypeGroup.Text) { }
 
     /// <inheritdoc />
     public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2)

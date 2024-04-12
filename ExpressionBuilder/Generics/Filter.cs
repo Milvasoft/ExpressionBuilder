@@ -165,6 +165,7 @@ public class Filter<TClass> : IFilter, IXmlSerializable where TClass : class
                 result.Append('(');
 
             var groupResult = new StringBuilder();
+
             foreach (var statement in statementGroup)
             {
                 if (groupResult.Length > 0)
@@ -175,6 +176,7 @@ public class Filter<TClass> : IFilter, IXmlSerializable where TClass : class
             }
 
             result.Append(groupResult.ToString().Trim());
+
             if (_statements.Count > 1)
                 result.Append(')');
         }

@@ -8,9 +8,10 @@ namespace ExpressionBuilder.Operations;
 /// </summary>
 public class IsNotEmpty : OperationBase
 {
+    public static int ValueCount { get; } = 0;
+
     /// <inheritdoc />
-    public IsNotEmpty()
-        : base("IsNotEmpty", 0, TypeGroup.Text) { }
+    public IsNotEmpty() : base(nameof(IsNotEmpty), ValueCount, TypeGroup.Text) { }
 
     /// <inheritdoc />
     public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2) => Expression.NotEqual(member.TrimToLower(), Expression.Constant(string.Empty))

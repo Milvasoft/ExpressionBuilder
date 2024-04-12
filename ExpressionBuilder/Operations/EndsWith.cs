@@ -9,11 +9,12 @@ namespace ExpressionBuilder.Operations;
 /// </summary>
 public class EndsWith : OperationBase
 {
-    private readonly MethodInfo _endsWithMethod = typeof(string).GetMethod("EndsWith", [typeof(string)]);
+    private readonly MethodInfo _endsWithMethod = typeof(string).GetMethod(nameof(string.EndsWith), [typeof(string)]);
+
+    public static int ValueCount { get; } = 1;
 
     /// <inheritdoc />
-    public EndsWith()
-        : base("EndsWith", 1, TypeGroup.Text) { }
+    public EndsWith() : base(nameof(EndsWith), ValueCount, TypeGroup.Text) { }
 
     /// <inheritdoc />
     public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2)

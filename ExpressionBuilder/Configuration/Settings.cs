@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
-using ExpressionBuilder.Common;
+﻿using ExpressionBuilder.Common;
+using Microsoft.Extensions.Configuration;
 
 namespace ExpressionBuilder.Configuration;
 
@@ -9,15 +9,15 @@ public class Settings
 
     public static void LoadSettings(Settings settings)
     {
-        var builder = new ConfigurationBuilder()
-            .SetBasePath(AppContext.BaseDirectory)
-            .AddJsonFile("appsettings.json",
-                optional: true,
-                reloadOnChange: true);
+        var builder = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory)
+                                                .AddJsonFile("appsettings.json",
+                                                             optional: true,
+                                                             reloadOnChange: true);
 
         var config = builder.Build();
 
         settings.SupportedTypes = [];
+
         foreach (var supportedType in config.GetSection("supportedTypes").GetChildren())
         {
             var typeGroup = supportedType.GetValue<TypeGroup>("typeGroup");

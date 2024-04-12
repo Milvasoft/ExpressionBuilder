@@ -8,9 +8,10 @@ namespace ExpressionBuilder.Operations;
 /// </summary>
 public class Between : OperationBase
 {
+    public static int ValueCount { get; } = 2;
+
     /// <inheritdoc />
-    public Between()
-        : base("Between", 2, TypeGroup.Number | TypeGroup.Date) { }
+    public Between() : base(nameof(Between), ValueCount, TypeGroup.Number | TypeGroup.Date) { }
 
     /// <inheritdoc />
     public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2)

@@ -8,9 +8,10 @@ namespace ExpressionBuilder.Operations;
 /// </summary>
 public class LessThanOrEqualTo : OperationBase
 {
+    public static int ValueCount { get; } = 1;
+
     /// <inheritdoc />
-    public LessThanOrEqualTo()
-        : base("LessThanOrEqualTo", 1, TypeGroup.Number | TypeGroup.Date) { }
+    public LessThanOrEqualTo() : base(nameof(LessThanOrEqualTo), ValueCount, TypeGroup.Number | TypeGroup.Date) { }
 
     /// <inheritdoc />
     public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2) => Expression.LessThanOrEqual(member, constant1);

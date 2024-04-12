@@ -9,9 +9,10 @@ namespace ExpressionBuilder.Operations;
 /// </summary>
 public class NotIn : OperationBase
 {
+    public static int ValueCount { get; } = 1;
+
     /// <inheritdoc />
-    public NotIn()
-        : base("NotIn", 1, TypeGroup.Default | TypeGroup.Boolean | TypeGroup.Date | TypeGroup.Number | TypeGroup.Text, true, true) { }
+    public NotIn() : base(nameof(NotIn), ValueCount, TypeGroup.Default | TypeGroup.Boolean | TypeGroup.Date | TypeGroup.Number | TypeGroup.Text, true, true) { }
 
     /// <inheritdoc />
     public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2)

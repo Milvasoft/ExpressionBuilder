@@ -9,11 +9,12 @@ namespace ExpressionBuilder.Operations;
 /// </summary>
 public class DoesNotContain : OperationBase
 {
-    private readonly MethodInfo _stringContainsMethod = typeof(string).GetMethod("Contains", [typeof(string)]);
+    private readonly MethodInfo _stringContainsMethod = typeof(string).GetMethod(nameof(string.Contains), [typeof(string)]);
+
+    public static int ValueCount { get; } = 1;
 
     /// <inheritdoc />
-    public DoesNotContain()
-        : base("DoesNotContain", 1, TypeGroup.Text) { }
+    public DoesNotContain() : base(nameof(DoesNotContain), ValueCount, TypeGroup.Text) { }
 
     /// <inheritdoc />
     public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2)

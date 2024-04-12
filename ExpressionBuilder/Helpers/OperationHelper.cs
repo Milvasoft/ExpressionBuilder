@@ -14,11 +14,33 @@ public class OperationHelper : IOperationHelper
 
     private readonly Settings _settings;
 
-    private readonly Dictionary<TypeGroup, HashSet<Type>> _typeGroups;
+    public static Dictionary<TypeGroup, HashSet<Type>> TypeGroups { get; } = new Dictionary<TypeGroup, HashSet<Type>>
+    {
+        { TypeGroup.Text, new HashSet<Type> { typeof(string), typeof(char) } },
+        { TypeGroup.Number, new HashSet<Type> { typeof(int), typeof(uint), typeof(byte), typeof(sbyte), typeof(short), typeof(ushort), typeof(long), typeof(ulong), typeof(float), typeof(double), typeof(decimal) } },
+        { TypeGroup.Boolean, new HashSet<Type> { typeof(bool) } },
+        { TypeGroup.Date, new HashSet<Type> { typeof(DateTime) } },
+        { TypeGroup.Nullable, new HashSet<Type> { typeof(Nullable<>), typeof(string) } }
+    };
+
+    /// <summary>
+    /// List of all operations loaded so far.
+    /// </summary>
+    public IEnumerable<IOperation> Operations => [.. _operations];
 
     static OperationHelper()
     {
         LoadDefaultOperations();
+    }
+
+    /// <summary>
+    /// Instantiates a new OperationHelper.
+    /// </summary>
+    public OperationHelper()
+    {
+        _settings = new Settings();
+
+        Settings.LoadSettings(_settings);
     }
 
     /// <summary>
@@ -38,30 +60,6 @@ public class OperationHelper : IOperationHelper
     }
 
     /// <summary>
-    /// List of all operations loaded so far.
-    /// </summary>
-    public IEnumerable<IOperation> Operations => [.. _operations];
-
-    /// <summary>
-    /// Instantiates a new OperationHelper.
-    /// </summary>
-    public OperationHelper()
-    {
-        _settings = new Settings();
-
-        Settings.LoadSettings(_settings);
-
-        _typeGroups = new Dictionary<TypeGroup, HashSet<Type>>
-        {
-            { TypeGroup.Text, new HashSet<Type> { typeof(string), typeof(char) } },
-            { TypeGroup.Number, new HashSet<Type> { typeof(int), typeof(uint), typeof(byte), typeof(sbyte), typeof(short), typeof(ushort), typeof(long), typeof(ulong), typeof(float), typeof(double), typeof(decimal) } },
-            { TypeGroup.Boolean, new HashSet<Type> { typeof(bool) } },
-            { TypeGroup.Date, new HashSet<Type> { typeof(DateTime) } },
-            { TypeGroup.Nullable, new HashSet<Type> { typeof(Nullable<>), typeof(string) } }
-        };
-    }
-
-    /// <summary>
     /// Retrieves a list of <see cref="IOperation"></see> supported by a type.
     /// </summary>
     /// <param name="type">Type for which supported operations should be retrieved.</param>
@@ -70,39 +68,6 @@ public class OperationHelper : IOperationHelper
     {
         GetCustomSupportedTypes();
         return GetSupportedOperations(type);
-    }
-
-    private void GetCustomSupportedTypes()
-    {
-        foreach (var supportedType in _settings.SupportedTypes)
-        {
-            if (supportedType.Type != null)
-                _typeGroups[supportedType.TypeGroup].Add(supportedType.Type);
-        }
-    }
-
-    private HashSet<IOperation> GetSupportedOperations(Type type)
-    {
-        var underlyingNullableType = Nullable.GetUnderlyingType(type);
-        var typeName = (underlyingNullableType ?? type).Name;
-
-        var supportedOperations = new List<IOperation>();
-        if (type.IsArray)
-        {
-            typeName = type.GetElementType()?.Name;
-            supportedOperations.AddRange(Operations.Where(o => o.SupportsLists && o.Active));
-        }
-
-        var typeGroup = TypeGroup.Default;
-        if (_typeGroups.Any(i => i.Value.Any(v => v.Name == typeName)))
-            typeGroup = _typeGroups.FirstOrDefault(i => i.Value.Any(v => v.Name == typeName)).Key;
-
-        supportedOperations.AddRange(Operations.Where(o => o.TypeGroup.HasFlag(typeGroup) && !o.SupportsLists && o.Active));
-
-        if (underlyingNullableType != null)
-            supportedOperations.AddRange(Operations.Where(o => o.TypeGroup.HasFlag(TypeGroup.Nullable) && !o.SupportsLists && o.Active));
-
-        return new HashSet<IOperation>(supportedOperations);
     }
 
     /// <summary>
@@ -135,6 +100,40 @@ public class OperationHelper : IOperationHelper
             DeactivateOperation(operation.Name, overloadExisting);
             _operations.Add(operation);
         }
+    }
+
+    private void GetCustomSupportedTypes()
+    {
+        foreach (var supportedType in _settings.SupportedTypes)
+        {
+            if (supportedType.Type != null)
+                TypeGroups[supportedType.TypeGroup].Add(supportedType.Type);
+        }
+    }
+
+    private HashSet<IOperation> GetSupportedOperations(Type type)
+    {
+        var underlyingNullableType = Nullable.GetUnderlyingType(type);
+        var typeName = (underlyingNullableType ?? type).Name;
+
+        var supportedOperations = new List<IOperation>();
+
+        if (type.IsArray)
+        {
+            typeName = type.GetElementType()?.Name;
+            supportedOperations.AddRange(Operations.Where(o => o.SupportsLists && o.Active));
+        }
+
+        var typeGroup = TypeGroup.Default;
+        if (TypeGroups.Any(i => i.Value.Any(v => v.Name == typeName)))
+            typeGroup = TypeGroups.FirstOrDefault(i => i.Value.Any(v => v.Name == typeName)).Key;
+
+        supportedOperations.AddRange(Operations.Where(o => o.TypeGroup.HasFlag(typeGroup) && !o.SupportsLists && o.Active));
+
+        if (underlyingNullableType != null)
+            supportedOperations.AddRange(Operations.Where(o => o.TypeGroup.HasFlag(TypeGroup.Nullable) && !o.SupportsLists && o.Active));
+
+        return new HashSet<IOperation>(supportedOperations);
     }
 
     private static void DeactivateOperation(string operationName, bool overloadExisting)

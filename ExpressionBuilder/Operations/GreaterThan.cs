@@ -8,9 +8,10 @@ namespace ExpressionBuilder.Operations;
 /// </summary>
 public class GreaterThan : OperationBase
 {
+    public static int ValueCount { get; } = 1;
+
     /// <inheritdoc />
-    public GreaterThan()
-        : base("GreaterThan", 1, TypeGroup.Number | TypeGroup.Date) { }
+    public GreaterThan() : base(nameof(GreaterThan), ValueCount, TypeGroup.Number | TypeGroup.Date) { }
 
     /// <inheritdoc />
     public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2) => Expression.GreaterThan(member, constant1);

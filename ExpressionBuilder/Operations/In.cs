@@ -10,9 +10,10 @@ namespace ExpressionBuilder.Operations;
 /// </summary>
 public class In : OperationBase
 {
+    public static int ValueCount { get; } = 1;
+
     /// <inheritdoc />
-    public In()
-        : base("In", 1, TypeGroup.Default | TypeGroup.Boolean | TypeGroup.Date | TypeGroup.Number | TypeGroup.Text, true, true) { }
+    public In() : base(nameof(In), ValueCount, TypeGroup.Default | TypeGroup.Boolean | TypeGroup.Date | TypeGroup.Number | TypeGroup.Text, true, true) { }
 
     /// <inheritdoc />
     public override MethodCallExpression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2)

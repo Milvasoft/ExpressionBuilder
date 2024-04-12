@@ -8,9 +8,10 @@ namespace ExpressionBuilder.Operations;
 /// </summary>
 public class IsNull : OperationBase
 {
+    public static int ValueCount { get; } = 0;
+
     /// <inheritdoc />
-    public IsNull()
-        : base("IsNull", 0, TypeGroup.Text | TypeGroup.Nullable, expectNullValues: true) { }
+    public IsNull() : base(nameof(IsNull), ValueCount, TypeGroup.Text | TypeGroup.Nullable, expectNullValues: true) { }
 
     /// <inheritdoc />
     public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2) => Expression.Equal(member, Expression.Constant(null));

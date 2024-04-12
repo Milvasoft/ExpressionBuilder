@@ -9,11 +9,12 @@ namespace ExpressionBuilder.Operations;
 /// </summary>
 public class StartsWith : OperationBase
 {
-    private readonly MethodInfo _startsWithMethod = typeof(string).GetMethod("StartsWith", [typeof(string)]);
+    public static int ValueCount { get; } = 1;
+
+    private readonly MethodInfo _startsWithMethod = typeof(string).GetMethod(nameof(string.StartsWith), [typeof(string)]);
 
     /// <inheritdoc />
-    public StartsWith()
-        : base("StartsWith", 1, TypeGroup.Text) { }
+    public StartsWith() : base(nameof(StartsWith), ValueCount, TypeGroup.Text) { }
 
     /// <inheritdoc />
     public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2)

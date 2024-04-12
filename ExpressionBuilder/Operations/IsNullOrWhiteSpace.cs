@@ -8,16 +8,17 @@ namespace ExpressionBuilder.Operations;
 /// </summary>
 public class IsNullOrWhiteSpace : OperationBase
 {
+    public static int ValueCount { get; } = 0;
+
     /// <inheritdoc />
-    public IsNullOrWhiteSpace()
-        : base("IsNullOrWhiteSpace", 0, TypeGroup.Text, expectNullValues: true) { }
+    public IsNullOrWhiteSpace() : base(nameof(IsNullOrWhiteSpace), ValueCount, TypeGroup.Text, expectNullValues: true) { }
 
     /// <inheritdoc />
     public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2)
     {
         Expression exprNull = Expression.Constant(null);
         Expression exprEmpty = Expression.Constant(string.Empty);
-        
+
         return Expression.OrElse(
             Expression.Equal(member, exprNull),
             Expression.AndAlso(
