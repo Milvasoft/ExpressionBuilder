@@ -1,44 +1,45 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>disable</Nullable>
-    <Authors>Milvasoft</Authors>
-    <RepositoryUrl>https://github.com/Milvasoft/ExpressionBuilder</RepositoryUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/Milvasoft/Milvasoft/master/src/Milvasoft.Helpers/Resources/milvalogo.png</PackageIconUrl>
-    <PackageProjectUrl>https://github.com/Milvasoft/ExpressionBuilder</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/Milvasoft/ExpressionBuilder/blob/master/LICENSE</PackageLicenseUrl>
-    <Copyright>Milvasoft</Copyright>
-    <PackageTags>LINQ Lambda Expression Builder LINQ Database Queryable</PackageTags>
-    <PackageReleaseNotes>Project upgraded to net8.0</PackageReleaseNotes>
-    <Description>This library basically provides you with a simple way to create lambda expressions to filter lists and database queries by delivering an easy-to-use fluent interface that enables the creation, storage and transmission of those filters.
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<Authors>Milvasoft</Authors>
+		<RepositoryUrl>https://github.com/Milvasoft/ExpressionBuilder</RepositoryUrl>
+		<PackageIconUrl>https://raw.githubusercontent.com/Milvasoft/Milvasoft/master/src/Milvasoft.Helpers/Resources/milvalogo.png</PackageIconUrl>
+		<PackageProjectUrl>https://github.com/Milvasoft/ExpressionBuilder</PackageProjectUrl>
+		<PackageLicenseUrl>https://github.com/Milvasoft/ExpressionBuilder/blob/master/LICENSE</PackageLicenseUrl>
+		<Copyright>Milvasoft</Copyright>
+		<PackageTags>LINQ Lambda Expression Builder LINQ Database Queryable</PackageTags>
+		<PackageReleaseNotes>Project upgraded to net8.0</PackageReleaseNotes>
+		<Description>
+			This library basically provides you with a simple way to create lambda expressions to filter lists and database queries by delivering an easy-to-use fluent interface that enables the creation, storage and transmission of those filters.
 
-      Useful to turn WebApi requests parameters into expressions, create advanced search screens with the capability to save and re-run those filters, among other things.
-    </Description>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Version>1.0.1</Version>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <PackageId>Milvasoft.ExpressionBuilder</PackageId>
-  </PropertyGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ExpressionBuilder.xml">
-      <Pack>true</Pack>
-		<PackagePath></PackagePath>
-	</None>
-    <None Include="readme.md">
-      <Pack>true</Pack>
-    </None>
-    <None Include="license.txt">
-      <Pack>true</Pack>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
-  </ItemGroup>
+			Useful to turn WebApi requests parameters into expressions, create advanced search screens with the capability to save and re-run those filters, among other things.
+		</Description>
+		<AssemblyVersion>1.0.0.0</AssemblyVersion>
+		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+		<Version>1.0.2</Version>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<PackageId>Milvasoft.ExpressionBuilder</PackageId>
+	</PropertyGroup>
+	<ItemGroup>
+		<Folder Include="Properties\" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="ExpressionBuilder.xml">
+			<Pack>true</Pack>
+			<PackagePath></PackagePath>
+		</None>
+		<None Include="readme.md">
+			<Pack>true</Pack>
+		</None>
+		<None Include="license.txt">
+			<Pack>true</Pack>
+		</None>
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+	</ItemGroup>
 </Project>
