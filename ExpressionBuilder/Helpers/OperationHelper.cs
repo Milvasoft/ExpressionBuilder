@@ -1,7 +1,8 @@
 ﻿using ExpressionBuilder.Common;
-using ExpressionBuilder.Configuration;
 using ExpressionBuilder.Exceptions;
 using ExpressionBuilder.Interfaces;
+using ExpressionBuilder.Operations;
+using System.Reflection;
 
 namespace ExpressionBuilder.Helpers;
 
@@ -24,12 +25,11 @@ public class OperationHelper : IOperationHelper
     /// <summary>
     /// List of all operations loaded so far.
     /// </summary>
-    public IEnumerable<IOperation> Operations => [.. _operations];
+    public HashSet<IOperation> Operations => _operations;
 
     static OperationHelper()
     {
         LoadDefaultOperations();
-        GetCustomSupportedTypes();
     }
 
     /// <summary>
@@ -39,11 +39,13 @@ public class OperationHelper : IOperationHelper
     {
         var operationInterface = typeof(IOperation);
 
-        var operationsFound = AppDomain.CurrentDomain.GetAssemblies()
-                                                     .Where(a => a.DefinedTypes.Any(t => t.Namespace == "ExpressionBuilder.Operations"))
-                                                     .SelectMany(s => s.GetTypes())
-                                                     .Where(p => operationInterface.IsAssignableFrom(p) && p.IsClass && !p.IsAbstract)
-                                                     .Select(t => (IOperation)Activator.CreateInstance(t));
+        var operationsFound = Assembly.GetAssembly(typeof(DoesNotContain))
+                                      .GetTypes()
+                                      .Where(a => a.Namespace == "ExpressionBuilder.Operations"
+                                                  && operationInterface.IsAssignableFrom(a)
+                                                  && a.IsClass
+                                                  && !a.IsAbstract)
+                                      .Select(t => Activator.CreateInstance(t) as IOperation);
 
         _operations = new HashSet<IOperation>(operationsFound!, new OperationEqualityComparer());
     }
@@ -63,17 +65,18 @@ public class OperationHelper : IOperationHelper
         if (type.IsArray)
         {
             typeName = type.GetElementType()?.Name;
-            supportedOperations.AddRange(Operations.Where(o => o.SupportsLists && o.Active));
+            supportedOperations.AddRange(_operations.Where(o => o.SupportsLists && o.Active));
         }
 
         var typeGroup = TypeGroup.Default;
+
         if (TypeGroups.Any(i => i.Value.Any(v => v.Name == typeName)))
             typeGroup = TypeGroups.FirstOrDefault(i => i.Value.Any(v => v.Name == typeName)).Key;
 
-        supportedOperations.AddRange(Operations.Where(o => o.TypeGroup.HasFlag(typeGroup) && !o.SupportsLists && o.Active));
+        supportedOperations.AddRange(_operations.Where(o => o.TypeGroup.HasFlag(typeGroup) && !o.SupportsLists && o.Active));
 
         if (underlyingNullableType != null)
-            supportedOperations.AddRange(Operations.Where(o => o.TypeGroup.HasFlag(TypeGroup.Nullable) && !o.SupportsLists && o.Active));
+            supportedOperations.AddRange(_operations.Where(o => o.TypeGroup.HasFlag(TypeGroup.Nullable) && !o.SupportsLists && o.Active));
 
         return new HashSet<IOperation>(supportedOperations);
     }
@@ -85,7 +88,7 @@ public class OperationHelper : IOperationHelper
     /// <returns></returns>
     public IOperation GetOperationByName(string operationName)
     {
-        var operation = Operations.SingleOrDefault(o => o.Name == operationName && o.Active);
+        var operation = _operations.SingleOrDefault(o => o.Name == operationName && o.Active);
 
         return operation ?? throw new OperationNotFoundException(operationName);
     }
@@ -110,21 +113,13 @@ public class OperationHelper : IOperationHelper
         }
     }
 
-    private static void GetCustomSupportedTypes()
-    {
-        foreach (var supportedType in Settings.SupportedTypes)
-        {
-            if (supportedType.Type != null)
-                TypeGroups[supportedType.TypeGroup].Add(supportedType.Type);
-        }
-    }
-
     private static void DeactivateOperation(string operationName, bool overloadExisting)
     {
         if (!overloadExisting)
             return;
 
         var op = _operations.FirstOrDefault(o => string.Compare(o.Name, operationName, StringComparison.InvariantCultureIgnoreCase) == 0);
+
         if (op != null)
             op.Active = false;
     }

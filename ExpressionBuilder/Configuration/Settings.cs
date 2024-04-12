@@ -1,12 +1,11 @@
 ﻿using ExpressionBuilder.Common;
+using ExpressionBuilder.Helpers;
 using Microsoft.Extensions.Configuration;
 
 namespace ExpressionBuilder.Configuration;
 
 public static class Settings
 {
-    public static List<SupportedType> SupportedTypes { get; internal set; } = [];
-
     public static void LoadSettingsFromConfigurationFile(IConfigurationManager configurationManager)
     {
         foreach (var supportedType in configurationManager.GetSection("supportedTypes").GetChildren())
@@ -16,11 +15,16 @@ public static class Settings
             var type = Type.GetType(supportedType.GetValue<string>("Type"), false, true);
 
             if (type != null)
-            {
-                SupportedTypes.Add(new SupportedType { TypeGroup = typeGroup, Type = type });
-            }
+                OperationHelper.TypeGroups[typeGroup].Add(type);
         }
     }
 
-    public static void LoadSettings(List<SupportedType> supportedTypes) => SupportedTypes.AddRange(supportedTypes);
+    public static void LoadSettings(List<SupportedType> supportedTypes)
+    {
+        foreach (var supportedType in supportedTypes)
+        {
+            if (supportedType.Type != null)
+                OperationHelper.TypeGroups[supportedType.TypeGroup].Add(supportedType.Type);
+        }
+    }
 }

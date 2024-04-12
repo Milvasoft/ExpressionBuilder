@@ -10,7 +10,7 @@ public interface IOperationHelper
     /// <summary>
     /// List of all operations loaded so far.
     /// </summary>
-    IEnumerable<IOperation> Operations { get; }
+    HashSet<IOperation> Operations { get; }
 
     /// <summary>
     /// Retrieves a list of <see cref="Operation"></see> supported by a type.

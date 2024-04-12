@@ -96,7 +96,7 @@ public class HelperTests
     public void LoadCustomOperation()
     {
         var helper = new OperationHelper();
-        var operationsCount = helper.Operations.Count();
+        var operationsCount = helper.Operations.Count;
         var operations = new List<IOperation> { new ThisDay() };
         helper.LoadOperations(operations);
 
@@ -110,7 +110,7 @@ public class HelperTests
     public void LoadingSameCustomOperationTwice_Failure()
     {
         var helper = new OperationHelper();
-        var operationsCount = helper.Operations.Count();
+        var operationsCount = helper.Operations.Count;
         var operations = new List<IOperation> { new ThisDay(), new ThisDay(), new EqualTo() };
         helper.LoadOperations(operations);
 
@@ -125,7 +125,7 @@ public class HelperTests
     public void OverwritingOperations()
     {
         var helper = new OperationHelper();
-        var operationsCount = helper.Operations.Count();
+        var operationsCount = helper.Operations.Count;
         var operations = new List<IOperation> { new EqualTo() };
         helper.LoadOperations(operations, true);
 

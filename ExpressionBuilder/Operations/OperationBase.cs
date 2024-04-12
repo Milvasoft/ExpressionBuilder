@@ -16,7 +16,12 @@ namespace ExpressionBuilder.Operations;
 /// <param name="active">Determines if the operation is active.</param>
 /// <param name="supportsLists">Determines if the operation supports arrays.</param>
 /// <param name="expectNullValues"></param>
-public abstract class OperationBase(string name, int numberOfValues, TypeGroup typeGroups, bool active = true, bool supportsLists = false, bool expectNullValues = false) : IOperation, IEquatable<IOperation>
+public abstract class OperationBase(string name,
+                                    int numberOfValues,
+                                    TypeGroup typeGroups,
+                                    bool active = true,
+                                    bool supportsLists = false,
+                                    bool expectNullValues = false) : IOperation, IEquatable<IOperation>
 {
     /// <inheritdoc />
     public string Name { get; } = name;
