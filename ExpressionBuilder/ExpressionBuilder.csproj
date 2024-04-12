@@ -18,7 +18,7 @@
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Version>1.0.1</Version>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageId>Milvasoft.ExpressionBuilder</PackageId>
   </PropertyGroup>
   <ItemGroup>
@@ -27,8 +27,8 @@
   <ItemGroup>
     <None Include="ExpressionBuilder.xml">
       <Pack>true</Pack>
-      <PackagePath>lib\net452;lib\netstandard2.0</PackagePath>
-    </None>
+		<PackagePath></PackagePath>
+	</None>
     <None Include="readme.md">
       <Pack>true</Pack>
     </None>
