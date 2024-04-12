@@ -1,4 +1,5 @@
 ﻿using ExpressionBuilder.Common;
+using ExpressionBuilder.Configuration;
 using ExpressionBuilder.Exceptions;
 using ExpressionBuilder.Generics;
 using ExpressionBuilder.Operations;
@@ -262,6 +263,7 @@ public class BuilderTest
     [TestCase(TestName = "Builder working with custom supported type")]
     public void BuilderUsingCustomSupportedType()
     {
+        Settings.LoadSettings([new SupportedType { Type = typeof(DateTimeOffset), TypeGroup = TypeGroup.Date }]);
         var dateOffset = new DateTimeOffset(new DateTime(1980, 1, 1));
         var filter = new Filter<Person>();
         filter.By("Birth.DateOffset", Operation.GreaterThan, dateOffset);

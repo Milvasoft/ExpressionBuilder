@@ -107,7 +107,6 @@ public class FilterStatement<TPropertyType> : IFilterStatement
     {
         if (typeof(TPropertyType) == typeof(object))
         {
-            //TODO: Issue regarding the TPropertyType that comes from the UI always as 'Object'
             System.Diagnostics.Debug.WriteLine("WARN: Not able to check if the operation is supported or not.");
             return;
         }

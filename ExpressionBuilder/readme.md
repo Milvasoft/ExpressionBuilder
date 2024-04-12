@@ -3,6 +3,7 @@ In short words, this library basically provides you with a simple way to create 
 
 # How to use it
 Let us imagine we have classes like this...
+
 ```CSharp
 public enum PersonGender
 {
@@ -46,21 +47,26 @@ public class Contact
 ```
 
 Now, what about being able query a list of `Person` in a way like this:
+
 ```CSharp
 var filter = new Filter<Person>();
+
 filter.By("Id", Operation.Between, 2, 4,  Connector.And);
 filter.By("Contacts[Value]", Operation.EndsWith, "@email.com", default(string), Connector.And);
 filter.By("Birth.Country", Operation.IsNotNull, default(string), default(string),  Connector.Or);
 filter.By("Name", Operation.Contains, " John");
+
 var people = People.Where(filter);
 
 //or like this...
 
 var filter = new Filter<Person>();
+
 filter.By("Id", Operation.Between, 2, 4)
       .And.By("Birth.Country", Operation.IsNotNull)
       .And.By("Contacts[Value]", Operation.EndsWith, "@email.com")
       .Or.By("Name", Operation.Contains, " John ");
+
 var people = People.Where(filter);
 ```
 So that would generate an expression like this:
@@ -138,36 +144,26 @@ While compiling the filter into a lambda expression, the expression builder will
 </configuration>
 ```
 
-## Globalization support
-You just need to perform some easy steps to add globalization support to the UI:
-1. Add a resource file to the project, naming it after the type you'll create your filter to (e.g. `Person.resx`);
-2. Add one entry for each property you'd like to globalize following the conventions (previously mentioned), but replacing the dots (`.`) and the brackets (`[`, `]`) by underscores (`_`);
-3. You can globalize the operations on a similar way as well by adding a resources file named `Operations.resx`;
-4. For the properties, you'll instantiate a `PropertyCollection` : `new PropertyCollection(typeof(Person), Resources.Person.ResourceManager)`. That will give you a collection of objects with three members:
-  * `Id`: The conventionalised property identifier (previously mentioned)
-  * `Name`: The resources file matching value for the property id
-  * `Info`: The `PropertyInfo` object for the property
-5. And for the operations, you have an extension method: `Operation.GreaterThanOrEqualTo.GetDescription(Resources.Operations.ResourceManager)`.
-
-#### Note on globalization
-Any property or operation not mentioned at the resources files will be replaced by its conventionalised property identifier.
-
 ## Complex expressions
 Complex expressions are handled basically by grouping up filter statements, like in the example below:
 ```CSharp
 var filter = new Filter<Products>();
+
 filter.By("SupplierID", Operation.EqualTo, 1);
 filter.StartGroup();
 filter.By("CategoryID", Operation.EqualTo, 1, Connector.Or);
 filter.By("CategoryID", Operation.EqualTo, 2);
+
 var people = db.Products.Where(filter);
 
 //or using the fluent interface...
 
 var filter = new Filter<Products>();
+
 filter.By("SupplierID", Operation.EqualTo, 1)
    .And
    .Group.By("CategoryID", Operation.EqualTo, 1).Or.By("CategoryID", Operation.EqualTo, 2);
+
 var people = db.Products.Where(filter);
 ```
 
@@ -183,6 +179,7 @@ Every time you start a group that means all further statements will by at the sa
 This is a breakthrough feature that enables you to create your own operations, or even overwrite the behaviour of the existing default operations. For example, let us say that you would like to have an operation to be applied on dates that would filter based on today's day and month (to know whose birthday is today, or to see which bills are due today). To do that, you would need to go through just two simple steps:
 
 1. Create your custom operation. An operation to do what was proposed on the previous example would look like this:
+
 ```CSharp
 public class ThisDay : IOperation
     {
@@ -246,6 +243,7 @@ public class ThisDay : IOperation
 ```
 
 2. Load your custom operation into the operations list for the Expression Builder. This should be done ONLY ONCE, and before you first ever try to use your custom operation.
+
 ```CSharp
 ExpressionBuilder.Operations.Operation.LoadOperations(new List<IOperation> { new ThisDay(), new EqualTo() }, true);
 ```
@@ -253,7 +251,7 @@ ExpressionBuilder.Operations.Operation.LoadOperations(new List<IOperation> { new
 You can see this custom operation in action by running the WinForms example project. And if you have any hard time creating your custom operations, please refer to my article [Build Lambda Expression Dynamically](https://www.codeproject.com/Articles/1079028/Build-Lambda-Expressions-Dynamically) for some insights on the subject.
 
 # License
-Copyright 2018 David Belmont
+Copyright Milvasoft
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

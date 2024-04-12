@@ -3,29 +3,24 @@ using Microsoft.Extensions.Configuration;
 
 namespace ExpressionBuilder.Configuration;
 
-public class Settings
+public static class Settings
 {
-    public List<SupportedType> SupportedTypes { get; private set; }
+    public static List<SupportedType> SupportedTypes { get; internal set; } = [];
 
-    public static void LoadSettings(Settings settings)
+    public static void LoadSettingsFromConfigurationFile(IConfigurationManager configurationManager)
     {
-        var builder = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory)
-                                                .AddJsonFile("appsettings.json",
-                                                             optional: true,
-                                                             reloadOnChange: true);
-
-        var config = builder.Build();
-
-        settings.SupportedTypes = [];
-
-        foreach (var supportedType in config.GetSection("supportedTypes").GetChildren())
+        foreach (var supportedType in configurationManager.GetSection("supportedTypes").GetChildren())
         {
             var typeGroup = supportedType.GetValue<TypeGroup>("typeGroup");
+
             var type = Type.GetType(supportedType.GetValue<string>("Type"), false, true);
+
             if (type != null)
             {
-                settings.SupportedTypes.Add(new SupportedType { TypeGroup = typeGroup, Type = type });
+                SupportedTypes.Add(new SupportedType { TypeGroup = typeGroup, Type = type });
             }
         }
     }
+
+    public static void LoadSettings(List<SupportedType> supportedTypes) => SupportedTypes.AddRange(supportedTypes);
 }
