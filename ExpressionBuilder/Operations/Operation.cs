@@ -36,6 +36,11 @@ public static class Operation
     public static IOperation EqualTo => new EqualTo();
 
     /// <summary>
+    /// Operation representing an equality comparison.
+    /// </summary>
+    public static IOperation DateEqualTo => new DateEqualTo();
+
+    /// <summary>
     /// Operation representing an "greater than" comparison.
     /// </summary>
     public static IOperation GreaterThan => new GreaterThan();
