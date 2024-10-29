@@ -65,7 +65,7 @@ public class HelperTests
     {
         OperationHelper.LoadDefaultOperations();
         var definitions = new OperationHelper();
-        var dateOperations = new List<string> { "Between", "EqualTo", "NotEqualTo", "GreaterThan", "GreaterThanOrEqualTo",
+        var dateOperations = new List<string> { "Between", "DateEqualTo", "EqualTo", "NotEqualTo", "GreaterThan", "GreaterThanOrEqualTo",
                                                    "LessThan", "LessThanOrEqualTo" };
         var operations = definitions.SupportedOperations(typeof(DateTime));
         Assert.That(operations.Select(o => o.Name), Is.EquivalentTo(dateOperations));

@@ -19,6 +19,7 @@ public class Person
     public Company Employer { get; set; }
     public Person Manager { get; set; }
     public double Salary { get; set; }
+    public DateTime? SalaryDate { get; set; }
     public long? EmployeeReferenceNumber { get; set; }
 
     public Person()
