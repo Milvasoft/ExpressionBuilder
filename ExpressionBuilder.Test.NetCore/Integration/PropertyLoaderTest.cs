@@ -1,11 +1,11 @@
 ﻿using ExpressionBuilder.Resources;
-using ExpressionBuilder.Test.NetCore.Models;
+using ExpressionBuilder.Test.Models;
 using FluentAssertions;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ExpressionBuilder.Test.NetCore.Integration;
+namespace ExpressionBuilder.Test.Integration;
 
 [TestFixture]
 public class PropertyLoaderTest

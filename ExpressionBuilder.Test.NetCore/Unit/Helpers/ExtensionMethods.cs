@@ -3,7 +3,7 @@ using FluentAssertions.Primitives;
 using NUnit.Framework;
 using System.Linq.Expressions;
 
-namespace ExpressionBuilder.Test.NetCore.Unit.Helpers;
+namespace ExpressionBuilder.Test.Unit.Helpers;
 
 public static class ExtensionMethods
 {

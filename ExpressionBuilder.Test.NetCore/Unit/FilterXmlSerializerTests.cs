@@ -1,7 +1,7 @@
 ﻿using ExpressionBuilder.Common;
 using ExpressionBuilder.Generics;
 using ExpressionBuilder.Operations;
-using ExpressionBuilder.Test.NetCore.Models;
+using ExpressionBuilder.Test.Models;
 using NUnit.Framework;
 using System;
 using System.IO;
@@ -10,7 +10,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace ExpressionBuilder.Test.NetCore.Unit;
+namespace ExpressionBuilder.Test.Unit;
 
 [TestFixture]
 public class FilterXmlSerializerTests

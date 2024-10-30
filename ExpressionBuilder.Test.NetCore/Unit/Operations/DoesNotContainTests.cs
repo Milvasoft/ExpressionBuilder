@@ -1,5 +1,5 @@
-﻿using ExpressionBuilder.Test.NetCore.Models;
-using ExpressionBuilder.Test.NetCore.Unit.Helpers;
+﻿using ExpressionBuilder.Test.Models;
+using ExpressionBuilder.Test.Unit.Helpers;
 using FluentAssertions;
 using NUnit.Framework;
 using System;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace ExpressionBuilder.Test.NetCore.Unit.Operations;
+namespace ExpressionBuilder.Test.Unit.Operations;
 
 [TestFixture]
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1862:Use the 'StringComparison' method overloads to perform case-insensitive string comparisons", Justification = "<Pending>")]
@@ -36,10 +36,10 @@ public class DoesNotContainTests
         expression.Left.Should().BeNullChecking(propertyName);
         expression.NodeType.Should().Be(ExpressionType.AndAlso);
 
-        var not = expression.Right as UnaryExpression;
+        var not = (expression.Right as UnaryExpression);
         not.NodeType.Should().Be(ExpressionType.Not);
 
-        var doesNotContain = not.Operand as MethodCallExpression;
+        var doesNotContain = (not.Operand as MethodCallExpression);
         doesNotContain.Method.Should().BeAssignableTo<MethodInfo>();
         var method = doesNotContain.Method;
         method.Name.Should().Be("Contains");

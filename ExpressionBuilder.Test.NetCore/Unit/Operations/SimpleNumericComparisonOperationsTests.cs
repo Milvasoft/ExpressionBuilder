@@ -1,13 +1,13 @@
 ﻿using ExpressionBuilder.Interfaces;
-using ExpressionBuilder.Test.NetCore.Models;
-using ExpressionBuilder.Test.NetCore.Unit.Helpers;
+using ExpressionBuilder.Test.Models;
+using ExpressionBuilder.Test.Unit.Helpers;
 using FluentAssertions;
 using NUnit.Framework;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace ExpressionBuilder.Test.NetCore.Unit.Operations;
+namespace ExpressionBuilder.Test.Unit.Operations;
 
 [TestFixture]
 public class SimpleNumericComparisonOperationsTests

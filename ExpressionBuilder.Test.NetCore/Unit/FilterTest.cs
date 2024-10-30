@@ -1,13 +1,13 @@
 ﻿using ExpressionBuilder.Common;
 using ExpressionBuilder.Generics;
 using ExpressionBuilder.Operations;
-using ExpressionBuilder.Test.NetCore.Models;
+using ExpressionBuilder.Test.Models;
 using FluentAssertions;
 using NUnit.Framework;
 using System;
 using System.Linq;
 
-namespace ExpressionBuilder.Test.NetCore.Unit;
+namespace ExpressionBuilder.Test.Unit;
 
 [TestFixture]
 public class FilterTest

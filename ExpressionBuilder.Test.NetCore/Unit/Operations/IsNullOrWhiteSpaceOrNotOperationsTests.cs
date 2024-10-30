@@ -1,13 +1,13 @@
 ﻿using ExpressionBuilder.Operations;
-using ExpressionBuilder.Test.NetCore.Models;
-using ExpressionBuilder.Test.NetCore.Unit.Helpers;
+using ExpressionBuilder.Test.Models;
+using ExpressionBuilder.Test.Unit.Helpers;
 using FluentAssertions;
 using NUnit.Framework;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace ExpressionBuilder.Test.NetCore.Unit.Operations;
+namespace ExpressionBuilder.Test.Unit.Operations;
 
 [TestFixture]
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1862:Use the 'StringComparison' method overloads to perform case-insensitive string comparisons", Justification = "<Pending>")]
@@ -24,7 +24,7 @@ public class IsNullOrWhiteSpaceOrNotOperationsTests
     public void GetExpressionTestNullWhiteSpace()
     {
         var propertyName = "Country";
-        var value = string.Empty;
+        string value = string.Empty;
         var operation = new IsNullOrWhiteSpace();
         var param = Expression.Parameter(typeof(Person), "x");
         var parent = Expression.Property(param, "Birth");
@@ -45,7 +45,7 @@ public class IsNullOrWhiteSpaceOrNotOperationsTests
         //Testing the operation execution
         var lambda = Expression.Lambda<Func<Person, bool>>(expression, param);
         var people = TestData.People.Where(lambda.Compile());
-        var solution = TestData.People.Where(x => x.Birth == null || x.Birth.Country == null || x.Birth.Country != null && x.Birth.Country.Trim().ToLower() == string.Empty);
+        var solution = TestData.People.Where(x => x.Birth == null || (x.Birth.Country == null || (x.Birth.Country != null && x.Birth.Country.Trim().ToLower() == string.Empty)));
         Assert.That(people, Is.EquivalentTo(solution));
     }
 
@@ -53,7 +53,7 @@ public class IsNullOrWhiteSpaceOrNotOperationsTests
     public void GetExpressionTestNotNullNorWhiteSpace()
     {
         var propertyName = "Country";
-        var value = string.Empty;
+        string value = string.Empty;
         var operation = new IsNotNullNorWhiteSpace();
         var param = Expression.Parameter(typeof(Person), "x");
         var parent = Expression.Property(param, "Birth");

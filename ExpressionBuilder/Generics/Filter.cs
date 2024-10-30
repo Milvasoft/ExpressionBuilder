@@ -30,7 +30,7 @@ public class Filter<TClass> : IFilter, IXmlSerializable where TClass : class
     /// <summary>
     /// List of <see cref="IFilterStatement" /> groups that will be combined and built into a LINQ expression.
     /// </summary>
-    public IEnumerable<IEnumerable<IFilterStatement>> Statements => [.. _statements];
+    public IEnumerable<IEnumerable<IFilterStatement>> Statements => _statements.ToArray();
 
     private List<IFilterStatement> CurrentStatementGroup => _statements[^1];
 

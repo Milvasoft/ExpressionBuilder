@@ -1,8 +1,8 @@
-﻿using ExpressionBuilder.Test.NetCore.Models;
+﻿using ExpressionBuilder.Test.Models;
 using System;
 using System.Collections.Generic;
 
-namespace ExpressionBuilder.Test.NetCore.Unit.Helpers;
+namespace ExpressionBuilder.Test.Unit.Helpers;
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S6562:Always set the \"DateTimeKind\" when creating new \"DateTime\" instances", Justification = "<Pending>")]
 public class TestData
