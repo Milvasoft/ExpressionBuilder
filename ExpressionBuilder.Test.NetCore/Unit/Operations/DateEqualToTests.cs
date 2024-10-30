@@ -37,12 +37,18 @@ public class DateEqualToTests
         expression.NodeType.Should().Be(ExpressionType.AndAlso);
 
         Assert.That(expression.Right, Is.AssignableTo<Expression>());
-        var shouldSubject = (BinaryExpression)expression.Right;
-        Assert.That(shouldSubject.Left, Is.AssignableTo<MemberExpression>());
-        Assert.That((shouldSubject.Left as MemberExpression).Member.Name, Is.EqualTo("Date"));
-        Assert.That(shouldSubject.NodeType, Is.EqualTo(ExpressionType.Equal));
-        Assert.That(shouldSubject.Right, Is.AssignableFrom<ConstantExpression>());
-        Assert.That((shouldSubject.Right as ConstantExpression).Value, Is.EqualTo(dateValue));
+
+        var shouldSubjectLeft = (BinaryExpression)((BinaryExpression)expression.Right).Left;
+        Assert.That((shouldSubjectLeft.Left as MemberExpression).Member.Name, Is.EqualTo("Value"));
+        Assert.That(shouldSubjectLeft.NodeType, Is.EqualTo(ExpressionType.GreaterThanOrEqual));
+        Assert.That(shouldSubjectLeft.Right, Is.AssignableFrom<ConstantExpression>());
+        Assert.That((shouldSubjectLeft.Right as ConstantExpression).Value, Is.LessThanOrEqualTo(dateValue));
+
+        var shouldSubjectRight = (BinaryExpression)((BinaryExpression)expression.Right).Right;
+        Assert.That((shouldSubjectRight.Left as MemberExpression).Member.Name, Is.EqualTo("Value"));
+        Assert.That(shouldSubjectRight.NodeType, Is.EqualTo(ExpressionType.LessThanOrEqual));
+        Assert.That(shouldSubjectRight.Right, Is.AssignableFrom<ConstantExpression>());
+        Assert.That((shouldSubjectRight.Right as ConstantExpression).Value, Is.GreaterThanOrEqualTo(dateValue));
 
         //Testing the operation execution
         var lambda = Expression.Lambda<Func<Person, bool>>(expression, param);
