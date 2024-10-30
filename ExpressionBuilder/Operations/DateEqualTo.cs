@@ -41,16 +41,18 @@ public class DateEqualTo : OperationBase
 
         if (constant.Type == typeof(DateTime) || constant.Type == typeof(DateTime?))
         {
-            DateTime startDate = ((DateTime)constant.Value).Date; // Tarihin başlangıcı (saat 00:00:00)
-            DateTime endDate = startDate.AddDays(1).AddTicks(-1); // Tarihin sonu (saat 23:59:59.9999999)
+            var valueAsDateTime = (DateTime)constant.Value;
+            DateTime startDate = new(valueAsDateTime.Year, valueAsDateTime.Month, valueAsDateTime.Day, 0, 0, 0, kind: DateTimeKind.Utc);
+            DateTime endDate = startDate.AddDays(1).AddTicks(-1);
 
             startDateExpression = Expression.Constant(startDate);
             endDateExpression = Expression.Constant(endDate);
         }
         else if (constant.Type == typeof(DateTimeOffset) || constant.Type == typeof(DateTimeOffset?))
         {
-            DateTimeOffset startDate = ((DateTimeOffset)constant.Value).Date; // Tarihin başlangıcı (saat 00:00:00)
-            DateTimeOffset endDate = startDate.AddDays(1).AddTicks(-1); // Tarihin sonu (saat 23:59:59.9999999)
+            var valueAsDateTimeOffset = (DateTimeOffset)constant.Value;
+            DateTimeOffset startDate = new(valueAsDateTimeOffset.Year, valueAsDateTimeOffset.Month, valueAsDateTimeOffset.Day, 0, 0, 0, TimeSpan.Zero); // UTC
+            DateTimeOffset endDate = startDate.AddDays(1).AddTicks(-1);
 
             startDateExpression = Expression.Constant(startDate);
             endDateExpression = Expression.Constant(endDate);
