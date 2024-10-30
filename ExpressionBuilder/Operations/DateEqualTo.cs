@@ -19,21 +19,19 @@ public class DateEqualTo : OperationBase
         if (!IsDateType(constant1) || constant1.Value == null)
             throw new InvalidDataException("DateEqualTo can be used with only date types and cannot be null");
 
+        var (startDateExpression, endDateExpression) = GetStartAndEndDates(constant1);
+
+        var memberExpression = member;
+
         if (Nullable.GetUnderlyingType(member.Type) != null)
         {
-            var memberValue = Expression.Property(member, "Value");
-
-            var (startDateExpression, endDateExpression) = GetStartAndEndDates(constant1);
-
-            var left = Expression.GreaterThanOrEqual(memberValue, startDateExpression);
-            var right = Expression.LessThanOrEqual(memberValue, endDateExpression);
-
-            return Expression.AndAlso(left, right).AddNullCheck(member);
+            memberExpression = Expression.Property(member, "Value");
         }
 
-        var dateMember = Expression.Property(member, "Date");
+        var left = Expression.GreaterThanOrEqual(memberExpression, startDateExpression);
+        var right = Expression.LessThanOrEqual(memberExpression, endDateExpression);
 
-        return Expression.Equal(dateMember, constant1);
+        return Nullable.GetUnderlyingType(member.Type) != null ? Expression.AndAlso(left, right).AddNullCheck(member) : Expression.AndAlso(left, right);
     }
 
     private static (ConstantExpression, ConstantExpression) GetStartAndEndDates(ConstantExpression constant)
