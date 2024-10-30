@@ -1,4 +1,4 @@
-﻿namespace ExpressionBuilder.Test.Models;
+﻿namespace ExpressionBuilder.Test.NetCore.Models;
 
 public enum ContactType
 {

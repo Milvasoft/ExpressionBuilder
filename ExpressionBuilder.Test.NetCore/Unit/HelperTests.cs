@@ -1,13 +1,13 @@
 ﻿using ExpressionBuilder.Exceptions;
 using ExpressionBuilder.Helpers;
 using ExpressionBuilder.Interfaces;
-using ExpressionBuilder.Test.CustomOperations;
+using ExpressionBuilder.Test.NetCore.CustomOperations;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ExpressionBuilder.Test.Unit;
+namespace ExpressionBuilder.Test.NetCore.Unit;
 
 [TestFixture]
 public class HelperTests

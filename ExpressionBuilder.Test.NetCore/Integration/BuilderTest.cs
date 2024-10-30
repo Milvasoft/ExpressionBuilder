@@ -3,15 +3,15 @@ using ExpressionBuilder.Configuration;
 using ExpressionBuilder.Exceptions;
 using ExpressionBuilder.Generics;
 using ExpressionBuilder.Operations;
-using ExpressionBuilder.Test.Models;
-using ExpressionBuilder.Test.Unit.Helpers;
+using ExpressionBuilder.Test.NetCore.Models;
+using ExpressionBuilder.Test.NetCore.Unit.Helpers;
 using FluentAssertions;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ExpressionBuilder.Test.Integration;
+namespace ExpressionBuilder.Test.NetCore.Integration;
 
 [TestFixture]
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S6562:Always set the \"DateTimeKind\" when creating new \"DateTime\" instances", Justification = "<Pending>")]
@@ -83,8 +83,8 @@ public class BuilderTest
         filter.By("Birth.Date", Operation.LessThanOrEqualTo, new DateTime(1980, 1, 1), DateTime.MinValue, Connector.Or);
         filter.By("Name", Operation.Contains, "Doe");
         var people = People.Where(filter);
-        var solution = People.Where(p => (p.Birth != null && p.Birth.Country != null && p.Birth.Country.Trim().ToLower().Equals("usa")) ||
-                                         (p.Birth != null && p.Birth.Date <= new DateTime(1980, 1, 1)) ||
+        var solution = People.Where(p => p.Birth != null && p.Birth.Country != null && p.Birth.Country.Trim().ToLower().Equals("usa") ||
+                                         p.Birth != null && p.Birth.Date <= new DateTime(1980, 1, 1) ||
                                          p.Name.Trim().ToLower().Contains("doe"));
         Assert.That(people, Is.EquivalentTo(solution));
     }
@@ -96,7 +96,7 @@ public class BuilderTest
         filter.By("Contacts[Type]", Operation.EqualTo, ContactType.Email).And.By("Birth.Country", Operation.StartsWith, " usa ");
         var people = People.Where(filter);
         var solution = People.Where(p => p.Contacts.Exists(c => c.Type == ContactType.Email) &&
-                                         (p.Birth != null && p.Birth.Country != null && p.Birth.Country.Trim().ToLower().StartsWith("usa")));
+                                         p.Birth != null && p.Birth.Country != null && p.Birth.Country.Trim().ToLower().StartsWith("usa"));
         Assert.That(people, Is.EquivalentTo(solution));
     }
 
@@ -126,8 +126,8 @@ public class BuilderTest
         var filter = new Filter<Person>();
         filter.By("Id", Operation.Between, 2, 6).And.By("Birth.Country", Operation.EqualTo, " usa ");
         var people = People.Where(filter);
-        var solution = People.Where(p => (p.Id >= 2 && p.Id <= 6) &&
-                                         (p.Birth != null && p.Birth.Country.Trim().ToLower().StartsWith("usa")));
+        var solution = People.Where(p => p.Id >= 2 && p.Id <= 6 &&
+                                         p.Birth != null && p.Birth.Country.Trim().ToLower().StartsWith("usa"));
         Assert.That(people, Is.EquivalentTo(solution));
         Assert.That(people.All(p => p.Birth != null && p.Birth.Country != null && p.Birth.Country.Trim().ToLower() == "usa"), Is.True);
     }
@@ -138,7 +138,7 @@ public class BuilderTest
         var filter = new Filter<Person>();
         filter.By("Id", Operation.Between, 2, 6).And.By("Id", Operation.In, _values1);
         var people = People.Where(filter);
-        var solution = People.Where(p => (p.Id >= 2 && p.Id <= 6) &&
+        var solution = People.Where(p => p.Id >= 2 && p.Id <= 6 &&
                                          _values1.Contains(p.Id));
         Assert.That(people, Is.EquivalentTo(solution));
         Assert.That(people.Min(p => p.Id), Is.EqualTo(4));
@@ -160,7 +160,7 @@ public class BuilderTest
         var filter = new Filter<Person>();
         filter.By("Employer.Name", Operation.IsNull);
         var people = People.Where(filter);
-        var solution = People.Where(p => p.Employer == null || (p.Employer != null && p.Employer.Name == null));
+        var solution = People.Where(p => p.Employer == null || p.Employer != null && p.Employer.Name == null);
         Assert.That(people, Is.EquivalentTo(solution));
     }
 
@@ -255,8 +255,8 @@ public class BuilderTest
         filter.By("Birth.Date", Operation.IsNotNull)
               .Or.By("Birth.Date", Operation.GreaterThan, new DateTime(1980, 1, 1));
         var people = People.Where(filter);
-        var solution = People.Where(p => (p.Birth != null && p.Birth.Date != null)
-                                        || (p.Birth != null && p.Birth.Date.HasValue && p.Birth.Date > new DateTime(1980, 1, 1)));
+        var solution = People.Where(p => p.Birth != null && p.Birth.Date != null
+                                        || p.Birth != null && p.Birth.Date.HasValue && p.Birth.Date > new DateTime(1980, 1, 1));
         Assert.That(people, Is.EquivalentTo(solution));
     }
 
@@ -268,7 +268,7 @@ public class BuilderTest
         var filter = new Filter<Person>();
         filter.By("Birth.DateOffset", Operation.GreaterThan, dateOffset);
         var people = People.Where(filter);
-        var solution = People.Where(p => (p.Birth != null && p.Birth.DateOffset.HasValue && p.Birth.DateOffset > dateOffset));
+        var solution = People.Where(p => p.Birth != null && p.Birth.DateOffset.HasValue && p.Birth.DateOffset > dateOffset);
         Assert.That(people, Is.EquivalentTo(solution));
     }
 
@@ -299,8 +299,8 @@ public class BuilderTest
             .Or
             .Group.By("Name", Operation.EndsWith, "Doe").And.By("Birth.Country", Operation.IsNullOrWhiteSpace);
         var people = People.Where(filter);
-        var solution = People.Where(p => ((p.Birth != null && p.Birth.Country != null && p.Birth.Country.Trim().ToLower() == "usa") && !p.Name.Contains("Doe"))
-                            || (p.Name.EndsWith("Doe") && (p.Birth != null && string.IsNullOrWhiteSpace(p.Birth.Country))));
+        var solution = People.Where(p => p.Birth != null && p.Birth.Country != null && p.Birth.Country.Trim().ToLower() == "usa" && !p.Name.Contains("Doe")
+                            || p.Name.EndsWith("Doe") && p.Birth != null && string.IsNullOrWhiteSpace(p.Birth.Country));
 
         Assert.That(people, Is.EquivalentTo(solution));
     }
@@ -316,8 +316,8 @@ public class BuilderTest
         filter.By("Name", Operation.EndsWith, "Doe", default, Connector.And);
         filter.By("Birth.Country", Operation.IsNullOrWhiteSpace, default, default(string), Connector.And);
         var people = People.Where(filter);
-        var solution = People.Where(p => ((p.Birth != null && p.Birth.Country != null && p.Birth.Country.Trim().ToLower() == "usa") && !p.Name.Contains("Doe"))
-                            || (p.Name.EndsWith("Doe") && (p.Birth != null && string.IsNullOrWhiteSpace(p.Birth.Country))));
+        var solution = People.Where(p => p.Birth != null && p.Birth.Country != null && p.Birth.Country.Trim().ToLower() == "usa" && !p.Name.Contains("Doe")
+                            || p.Name.EndsWith("Doe") && p.Birth != null && string.IsNullOrWhiteSpace(p.Birth.Country));
 
         Assert.That(people, Is.EquivalentTo(solution));
     }
@@ -330,8 +330,8 @@ public class BuilderTest
             .And
             .By("Birth.Country", Operation.EqualTo, "USA").Or.By("Birth.Country", Operation.EqualTo, "AUS");
         var people = People.Where(filter);
-        var solution = People.Where(p => ((p.Birth != null && p.Birth.Country == "USA") || (p.Birth != null && p.Birth.Country == "AUS"))
-                                         && (p.Salary >= 4000 && p.Salary <= 5000));
+        var solution = People.Where(p => (p.Birth != null && p.Birth.Country == "USA" || p.Birth != null && p.Birth.Country == "AUS")
+                                         && p.Salary >= 4000 && p.Salary <= 5000);
 
         Assert.That(people, Is.Not.EquivalentTo(solution));
     }

@@ -3,7 +3,7 @@ using ExpressionBuilder.Interfaces;
 using System;
 using System.Linq.Expressions;
 
-namespace ExpressionBuilder.Test.CustomOperations;
+namespace ExpressionBuilder.Test.NetCore.CustomOperations;
 
 public class ThisDay : IOperation
 {

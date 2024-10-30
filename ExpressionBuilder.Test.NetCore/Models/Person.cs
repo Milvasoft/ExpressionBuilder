@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ExpressionBuilder.Test.Models;
+namespace ExpressionBuilder.Test.NetCore.Models;
 
 public enum PersonGender
 {
@@ -32,13 +32,13 @@ public class Person
     {
         unchecked
         {
-            int hash = GetType().ToString().GetHashCode();
-            hash = (hash * 16777619) ^ Name.GetHashCode();
-            hash = (hash * 16777619) ^ Gender.GetHashCode();
+            var hash = GetType().ToString().GetHashCode();
+            hash = hash * 16777619 ^ Name.GetHashCode();
+            hash = hash * 16777619 ^ Gender.GetHashCode();
 
             if (Birth.Date != null)
             {
-                hash = (hash * 16777619) ^ Birth.Date.GetHashCode();
+                hash = hash * 16777619 ^ Birth.Date.GetHashCode();
             }
 
             return hash;

@@ -2,7 +2,7 @@
 using ExpressionBuilder.Interfaces;
 using System.Linq.Expressions;
 
-namespace ExpressionBuilder.Test.CustomOperations;
+namespace ExpressionBuilder.Test.NetCore.CustomOperations;
 
 public class EqualTo : IOperation
 {
