@@ -12,7 +12,7 @@ public class PropertyLoaderTest
 {
     private readonly List<string> _propertyIds =
     [
-        "Id", "Name", "Gender", "Salary","SalaryDate", "Birth.Date", "Birth.DateOffset", "Birth.Age", "Birth.Country", "Contacts[Type]", "Contacts[Value]", "Contacts[Comments]", "Employer.Name", "Employer.Industry", "EmployeeReferenceNumber"
+        "Id", "Name", "Gender", "Salary","SalaryDate","SalaryDateOffset", "Birth.Date", "Birth.DateOffset", "Birth.Age", "Birth.Country", "Contacts[Type]", "Contacts[Value]", "Contacts[Comments]", "Employer.Name", "Employer.Industry", "EmployeeReferenceNumber"
     ];
 
     [TestCase(TestName = "Checking the loading of classes' properties and fields")]
