@@ -22,6 +22,7 @@ public class EqualToTests
 
     [TestCase("Name", " John doe ", TestName = "'EqualTo' operation - Get expression (string value)")]
     [TestCase("Salary", 3500D, TestName = "'EqualTo' operation - Get expression (Failure: string property with integer value)")]
+    [TestCase("SalaryDate", null, TestName = "'EqualTo null' operation - Get expression (Failure: string property with integer value)")]
     public void GetExpressionStringValueTest(string propertyName, object value)
     {
         var operation = new EqualTo();
