@@ -17,8 +17,8 @@ public class DateEqualTo : OperationBase
     /// <inheritdoc />
     public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2)
     {
-        if (!IsDateType(constant1))
-            throw new InvalidDataException("DateEqualTo can be used with only date types");
+        if (!IsDateType(member))
+            throw new InvalidDataException("DateEqualTo can be used with only date types!");
 
         if (constant1.Value == null)
             return Expression.Equal(member, constant1);
@@ -81,8 +81,8 @@ public class DateEqualTo : OperationBase
         return (startDateExpression, endDateExpression);
     }
 
-    private static bool IsDateType(ConstantExpression constant) => constant.Type == typeof(DateTime)
-                                                                || constant.Type == typeof(DateTime?)
-                                                                || constant.Type == typeof(DateTimeOffset)
-                                                                || constant.Type == typeof(DateTimeOffset?);
+    private static bool IsDateType(MemberExpression member) => member.Type == typeof(DateTime)
+                                                              || member.Type == typeof(DateTime?)
+                                                              || member.Type == typeof(DateTimeOffset)
+                                                              || member.Type == typeof(DateTimeOffset?);
 }
