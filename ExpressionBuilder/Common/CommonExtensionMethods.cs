@@ -81,6 +81,9 @@ public static class CommonExtensionMethods
     /// <returns></returns>
     public static ConstantExpression ConvertUtcIfRequested(this ConstantExpression constant)
     {
+        if (constant.Value == null)
+            return constant;
+
         if (constant.Type == typeof(DateTime) || constant.Type == typeof(DateTime?))
         {
             var valueAsDateTime = (DateTime)constant.Value;
