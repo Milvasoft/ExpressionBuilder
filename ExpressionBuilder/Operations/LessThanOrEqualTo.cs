@@ -14,5 +14,5 @@ public class LessThanOrEqualTo : OperationBase
     public LessThanOrEqualTo() : base(nameof(LessThanOrEqualTo), ValueCount, TypeGroup.Number | TypeGroup.Date) { }
 
     /// <inheritdoc />
-    public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2) => Expression.LessThanOrEqual(member, constant1);
+    public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2) => Expression.LessThanOrEqual(member, constant1.ConvertUtcIfRequested());
 }

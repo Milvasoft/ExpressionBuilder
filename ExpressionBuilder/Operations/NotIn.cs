@@ -22,7 +22,7 @@ public class NotIn : OperationBase
 
         var type = constant1.Value.GetType();
         var inInfo = type.GetMethod("Contains", [type.GetGenericArguments()[0]]);
-        var contains = Expression.Call(constant1, inInfo, member);
+        var contains = Expression.Call(constant1.ConvertUtcIfRequested(), inInfo, member);
         return Expression.Not(contains);
     }
 }

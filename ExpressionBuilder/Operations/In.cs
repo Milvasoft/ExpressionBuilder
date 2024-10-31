@@ -24,6 +24,8 @@ public class In : OperationBase
         var type = constant1.Value.GetType();
         var inInfo = type.GetMethod("Contains", [type.GetGenericArguments()[0]]);
 
+        constant1 = constant1.ConvertUtcIfRequested();
+
         return GetExpressionHandlingNullables(member, constant1, type, inInfo) ?? Expression.Call(constant1, inInfo, member);
     }
 

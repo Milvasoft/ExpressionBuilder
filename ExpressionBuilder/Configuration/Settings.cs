@@ -6,9 +6,18 @@ namespace ExpressionBuilder.Configuration;
 
 public static class Settings
 {
+    public const string SectionName = "Milvasoft:ExpressionBuilder";
+
+    /// <summary>
+    /// Uses utc conversion in date types searchs. Default is true.
+    /// </summary>
+    public static bool UseUtcConversionInDateTypes { get; set; } = true;
+
     public static void LoadSettingsFromConfigurationFile(IConfigurationManager configurationManager)
     {
-        foreach (var supportedType in configurationManager.GetSection("supportedTypes").GetChildren())
+        UseUtcConversionInDateTypes = configurationManager.GetSection($"{SectionName}:UseUtcConversionInDateTypes").Get<bool>();
+
+        foreach (var supportedType in configurationManager.GetSection($"{SectionName}:SupportedTypes").GetChildren())
         {
             var typeGroup = supportedType.GetValue<TypeGroup>("typeGroup");
 
@@ -19,8 +28,10 @@ public static class Settings
         }
     }
 
-    public static void LoadSettings(List<SupportedType> supportedTypes)
+    public static void LoadSettings(List<SupportedType> supportedTypes, bool useUtcConversionInDateTypes = true)
     {
+        UseUtcConversionInDateTypes = useUtcConversionInDateTypes;
+
         foreach (var supportedType in supportedTypes)
         {
             if (supportedType.Type != null)

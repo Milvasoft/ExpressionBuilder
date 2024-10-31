@@ -1,4 +1,5 @@
-﻿using ExpressionBuilder.Operations;
+﻿using ExpressionBuilder.Configuration;
+using ExpressionBuilder.Operations;
 using ExpressionBuilder.Test.Models;
 using ExpressionBuilder.Test.Unit.Helpers;
 using FluentAssertions;
@@ -20,12 +21,15 @@ public class DateEqualToTests
         TestData = new TestData();
     }
 
-    [TestCase("SalaryDate", "2024-10-31", TestName = "'DateEqualTo' operation - Get expression (DateTime? value)")]
-    [TestCase("SalaryDate", "2024-10-30", TestName = "'DateEqualTo' operation - Get expression (DateTime? value)")]
-    public void GetExpressionDateTimeValueTest(string propertyName, object value)
+    [TestCase("SalaryDate", "2024-10-31", true, TestName = "'DateEqualTo UTC 31' operation - Get expression (DateTime? value)")]
+    [TestCase("SalaryDate", "2024-10-30", true, TestName = "'DateEqualTo UTC 30' operation - Get expression (DateTime? value)")]
+    [TestCase("SalaryDate", "2024-10-29", false, TestName = "'DateEqualTo 29' operation - Get expression (DateTime? value)")]
+    [TestCase("SalaryDate", "2024-10-28", false, TestName = "'DateEqualTo 28' operation - Get expression (DateTime? value)")]
+    public void GetExpressionDateTimeValueTest(string propertyName, object value, bool useUtcConversionInDateTypes)
     {
+        Settings.UseUtcConversionInDateTypes = useUtcConversionInDateTypes;
         var dateValue = DateTime.Parse(value.ToString());
-        var startDate = dateValue.ToUniversalTime();
+        var startDate = Settings.UseUtcConversionInDateTypes ? dateValue.ToUniversalTime() : dateValue;
         var endDate = startDate.AddDays(1).AddTicks(-1);
         var operation = new DateEqualTo();
         var param = Expression.Parameter(typeof(Person), "x");
@@ -63,12 +67,15 @@ public class DateEqualToTests
 
     public static Func<Person, bool> SalaryDate(DateTime startDate, DateTime endDate) => x => x.SalaryDate != null && (x.SalaryDate.Value >= startDate && x.SalaryDate.Value <= endDate);
 
-    [TestCase("SalaryDateOffset", "2024-10-31", TestName = "'DateEqualTo Offset' operation - Get expression (DateTimeOffset? value)")]
-    [TestCase("SalaryDateOffset", "2024-10-30", TestName = "'DateEqualTo Offset' operation - Get expression (DateTimeOffset? value)")]
-    public void GetExpressionDateTimeOffsetValueTest(string propertyName, object value)
+    [TestCase("SalaryDateOffset", "2024-10-31", true, TestName = "'DateEqualTo Offset UTC 31' operation - Get expression (DateTimeOffset? value)")]
+    [TestCase("SalaryDateOffset", "2024-10-30", true, TestName = "'DateEqualTo Offset UTC 30' operation - Get expression (DateTimeOffset? value)")]
+    [TestCase("SalaryDateOffset", "2024-10-29", false, TestName = "'DateEqualTo Offset 29' operation - Get expression (DateTimeOffset? value)")]
+    [TestCase("SalaryDateOffset", "2024-10-28", false, TestName = "'DateEqualTo Offset 28' operation - Get expression (DateTimeOffset? value)")]
+    public void GetExpressionDateTimeOffsetValueTest(string propertyName, object value, bool useUtcConversionInDateTypes)
     {
+        Settings.UseUtcConversionInDateTypes = useUtcConversionInDateTypes;
         var dateValue = DateTimeOffset.Parse(value.ToString());
-        var startDate = dateValue.ToUniversalTime();
+        var startDate = Settings.UseUtcConversionInDateTypes ? dateValue.ToUniversalTime() : dateValue;
         var endDate = dateValue.AddDays(1).AddTicks(-1);
         var operation = new DateEqualTo();
         var param = Expression.Parameter(typeof(Person), "x");

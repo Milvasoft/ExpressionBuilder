@@ -21,7 +21,6 @@ public class EndsWith : OperationBase
     {
         var constant = constant1.TrimToLower();
 
-        return Expression.Call(member.TrimToLower(), _endsWithMethod, constant)
-            .AddNullCheck(member);
+        return Expression.Call(member.TrimToLower(), _endsWithMethod, constant).AddNullCheck(member);
     }
 }

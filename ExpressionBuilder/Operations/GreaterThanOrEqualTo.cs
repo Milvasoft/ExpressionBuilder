@@ -14,5 +14,5 @@ public class GreaterThanOrEqualTo : OperationBase
     public GreaterThanOrEqualTo() : base(nameof(GreaterThanOrEqualTo), ValueCount, TypeGroup.Number | TypeGroup.Date) { }
 
     /// <inheritdoc />
-    public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2) => Expression.GreaterThanOrEqual(member, constant1);
+    public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2) => Expression.GreaterThanOrEqual(member, constant1.ConvertUtcIfRequested());
 }

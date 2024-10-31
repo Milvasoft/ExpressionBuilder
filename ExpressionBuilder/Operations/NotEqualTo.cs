@@ -16,7 +16,7 @@ public class NotEqualTo : OperationBase
     /// <inheritdoc />
     public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2)
     {
-        Expression constant = constant1;
+        Expression constant = constant1.ConvertUtcIfRequested();
 
         if (member.Type != typeof(string))
             return Expression.NotEqual(member, constant);

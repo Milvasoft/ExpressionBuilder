@@ -14,5 +14,5 @@ public class GreaterThan : OperationBase
     public GreaterThan() : base(nameof(GreaterThan), ValueCount, TypeGroup.Number | TypeGroup.Date) { }
 
     /// <inheritdoc />
-    public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2) => Expression.GreaterThan(member, constant1);
+    public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2) => Expression.GreaterThan(member, constant1.ConvertUtcIfRequested());
 }

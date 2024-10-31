@@ -1,4 +1,5 @@
 ﻿using ExpressionBuilder.Common;
+using ExpressionBuilder.Configuration;
 using System.Linq.Expressions;
 
 namespace ExpressionBuilder.Operations;
@@ -43,13 +44,14 @@ public class DateEqualTo : OperationBase
         {
             var valueAsDateTime = (DateTime)constant.Value;
 
-            // Kullanıcının tarihine göre günün başı ve sonu
-            DateTime startDateLocal = new DateTime(valueAsDateTime.Year, valueAsDateTime.Month, valueAsDateTime.Day, 0, 0, 0, DateTimeKind.Local);
-            DateTime endDateLocal = startDateLocal.AddDays(1).AddTicks(-1);
+            DateTime startDate = new(valueAsDateTime.Year, valueAsDateTime.Month, valueAsDateTime.Day, 0, 0, 0, DateTimeKind.Local);
+            DateTime endDate = startDate.AddDays(1).AddTicks(-1);
 
-            // UTC'ye dönüştürme
-            DateTime startDate = startDateLocal.ToUniversalTime();
-            DateTime endDate = endDateLocal.ToUniversalTime();
+            if (Settings.UseUtcConversionInDateTypes)
+            {
+                startDate = startDate.ToUniversalTime();
+                endDate = endDate.ToUniversalTime();
+            }
 
             startDateExpression = Expression.Constant(startDate);
             endDateExpression = Expression.Constant(endDate);
@@ -59,12 +61,15 @@ public class DateEqualTo : OperationBase
             var valueAsDateTimeOffset = (DateTimeOffset)constant.Value;
 
             // Kullanıcının saat dilimine göre gün başlangıcı ve sonu
-            DateTimeOffset startDateLocal = new(valueAsDateTimeOffset.Year, valueAsDateTimeOffset.Month, valueAsDateTimeOffset.Day, 0, 0, 0, valueAsDateTimeOffset.Offset);
-            DateTimeOffset endDateLocal = startDateLocal.AddDays(1).AddTicks(-1);
+            DateTimeOffset startDate = new(valueAsDateTimeOffset.Year, valueAsDateTimeOffset.Month, valueAsDateTimeOffset.Day, 0, 0, 0, valueAsDateTimeOffset.Offset);
+            DateTimeOffset endDate = startDate.AddDays(1).AddTicks(-1);
 
+            if (Settings.UseUtcConversionInDateTypes)
+            {
+                startDate = startDate.ToOffset(TimeSpan.Zero);
+                endDate = endDate.ToOffset(TimeSpan.Zero);
+            }
             // UTC'ye dönüştürme
-            DateTimeOffset startDate = startDateLocal.ToOffset(TimeSpan.Zero);
-            DateTimeOffset endDate = endDateLocal.ToOffset(TimeSpan.Zero);
 
             startDateExpression = Expression.Constant(startDate);
             endDateExpression = Expression.Constant(endDate);

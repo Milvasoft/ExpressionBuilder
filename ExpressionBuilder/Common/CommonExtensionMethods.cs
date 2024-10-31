@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using ExpressionBuilder.Configuration;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace ExpressionBuilder.Common;
@@ -71,5 +72,38 @@ public static class CommonExtensionMethods
     {
         var oType = o.GetType();
         return oType.IsGenericType && oType.GetGenericTypeDefinition() == typeof(List<>);
+    }
+
+    /// <summary>
+    /// If constant type is date tyep it will converts constant value to utc if requested in the <see cref="Settings"/>.
+    /// </summary>
+    /// <param name="constant"></param>
+    /// <returns></returns>
+    public static ConstantExpression ConvertUtcIfRequested(this ConstantExpression constant)
+    {
+        if (constant.Type == typeof(DateTime) || constant.Type == typeof(DateTime?))
+        {
+            var valueAsDateTime = (DateTime)constant.Value;
+
+            DateTime dateValue = new(valueAsDateTime.Year, valueAsDateTime.Month, valueAsDateTime.Day, 0, 0, 0, DateTimeKind.Local);
+
+            if (Settings.UseUtcConversionInDateTypes)
+                dateValue = dateValue.ToUniversalTime();
+
+            constant = Expression.Constant(dateValue);
+        }
+        else if (constant.Type == typeof(DateTimeOffset) || constant.Type == typeof(DateTimeOffset?))
+        {
+            var valueAsDateTimeOffset = (DateTimeOffset)constant.Value;
+
+            DateTimeOffset dateValue = new(valueAsDateTimeOffset.Year, valueAsDateTimeOffset.Month, valueAsDateTimeOffset.Day, 0, 0, 0, valueAsDateTimeOffset.Offset);
+
+            if (Settings.UseUtcConversionInDateTypes)
+                dateValue = dateValue.ToOffset(TimeSpan.Zero);
+
+            constant = Expression.Constant(dateValue);
+        }
+
+        return constant;
     }
 }
