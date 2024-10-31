@@ -38,8 +38,8 @@ public class TestData
             new Person { Name = "Jane Jones", Gender = PersonGender.Female, Salary=3500, Birth = new Person.BirthData { Date = new DateTime(1980, 12, 20), Country = "AUS" } },
             new Person { Name = "Fulano Silva", Gender = PersonGender.Male, Salary=3322, Birth = new Person.BirthData { Date = new DateTime(1983, 5, 10), Country = "BRA" }, Employer = company, Manager = manager2, EmployeeReferenceNumber = 986543434323 },
             new Person { Name = "John Hancock", Gender = PersonGender.Male, Employer = company },
-            new Person { Name = "Jack Luffy", SalaryDate = new DateTime(2024, 10, 29, 23, 10, 10, DateTimeKind.Local), Gender = PersonGender.Male, Employer = company },
-            new Person { Name = "Jack Luffy", SalaryDateOffset = new DateTimeOffset(2024, 10, 29, 23, 10, 10, new TimeSpan(3, 0, 0)), Gender = PersonGender.Male, Employer = company },
+            new Person { Name = "Jack Luffy 30-21", SalaryDate = new DateTime(2024, 10, 30, 21, 10, 10, DateTimeKind.Utc), Gender = PersonGender.Male, Employer = company },
+            new Person { Name = "Jack Luffy Offset 30-21", SalaryDateOffset = new DateTimeOffset(2024, 10, 30, 21, 10, 10, TimeSpan.Zero), Gender = PersonGender.Male, Employer = company },
         ];
         var id = 1;
         foreach (var person in People)

@@ -42,8 +42,14 @@ public class DateEqualTo : OperationBase
         if (constant.Type == typeof(DateTime) || constant.Type == typeof(DateTime?))
         {
             var valueAsDateTime = (DateTime)constant.Value;
-            DateTime startDate = new(valueAsDateTime.Year, valueAsDateTime.Month, valueAsDateTime.Day, 0, 0, 0, kind: DateTimeKind.Utc);
-            DateTime endDate = startDate.AddDays(1).AddTicks(-1);
+
+            // Kullanıcının tarihine göre günün başı ve sonu
+            DateTime startDateLocal = new DateTime(valueAsDateTime.Year, valueAsDateTime.Month, valueAsDateTime.Day, 0, 0, 0, DateTimeKind.Local);
+            DateTime endDateLocal = startDateLocal.AddDays(1).AddTicks(-1);
+
+            // UTC'ye dönüştürme
+            DateTime startDate = startDateLocal.ToUniversalTime();
+            DateTime endDate = endDateLocal.ToUniversalTime();
 
             startDateExpression = Expression.Constant(startDate);
             endDateExpression = Expression.Constant(endDate);
@@ -51,8 +57,14 @@ public class DateEqualTo : OperationBase
         else if (constant.Type == typeof(DateTimeOffset) || constant.Type == typeof(DateTimeOffset?))
         {
             var valueAsDateTimeOffset = (DateTimeOffset)constant.Value;
-            DateTimeOffset startDate = new(valueAsDateTimeOffset.Year, valueAsDateTimeOffset.Month, valueAsDateTimeOffset.Day, 0, 0, 0, TimeSpan.Zero); // UTC
-            DateTimeOffset endDate = startDate.AddDays(1).AddTicks(-1);
+
+            // Kullanıcının saat dilimine göre gün başlangıcı ve sonu
+            DateTimeOffset startDateLocal = new(valueAsDateTimeOffset.Year, valueAsDateTimeOffset.Month, valueAsDateTimeOffset.Day, 0, 0, 0, valueAsDateTimeOffset.Offset);
+            DateTimeOffset endDateLocal = startDateLocal.AddDays(1).AddTicks(-1);
+
+            // UTC'ye dönüştürme
+            DateTimeOffset startDate = startDateLocal.ToOffset(TimeSpan.Zero);
+            DateTimeOffset endDate = endDateLocal.ToOffset(TimeSpan.Zero);
 
             startDateExpression = Expression.Constant(startDate);
             endDateExpression = Expression.Constant(endDate);
