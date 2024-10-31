@@ -17,8 +17,11 @@ public class DateEqualTo : OperationBase
     /// <inheritdoc />
     public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2)
     {
-        if (!IsDateType(constant1) || constant1.Value == null)
-            throw new InvalidDataException("DateEqualTo can be used with only date types and cannot be null");
+        if (!IsDateType(constant1))
+            throw new InvalidDataException("DateEqualTo can be used with only date types");
+
+        if (constant1.Value == null)
+            return Expression.Equal(member, constant1);
 
         var (startDateExpression, endDateExpression) = GetStartAndEndDates(constant1);
 
