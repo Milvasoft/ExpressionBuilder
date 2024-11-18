@@ -88,7 +88,7 @@ public static class CommonExtensionMethods
         {
             var valueAsDateTime = (DateTime)constant.Value;
 
-            DateTime dateValue = new(valueAsDateTime.Year, valueAsDateTime.Month, valueAsDateTime.Day, 0, 0, 0, DateTimeKind.Local);
+            DateTime dateValue = new(valueAsDateTime.Year, valueAsDateTime.Month, valueAsDateTime.Day, valueAsDateTime.Hour, valueAsDateTime.Minute, valueAsDateTime.Second, DateTimeKind.Local);
 
             if (Settings.UseUtcConversionInDateTypes)
                 dateValue = dateValue.ToUniversalTime();
@@ -99,7 +99,7 @@ public static class CommonExtensionMethods
         {
             var valueAsDateTimeOffset = (DateTimeOffset)constant.Value;
 
-            DateTimeOffset dateValue = new(valueAsDateTimeOffset.Year, valueAsDateTimeOffset.Month, valueAsDateTimeOffset.Day, 0, 0, 0, valueAsDateTimeOffset.Offset);
+            DateTimeOffset dateValue = new(valueAsDateTimeOffset.Year, valueAsDateTimeOffset.Month, valueAsDateTimeOffset.Day, valueAsDateTimeOffset.Hour, valueAsDateTimeOffset.Minute, valueAsDateTimeOffset.Second, valueAsDateTimeOffset.Offset);
 
             if (Settings.UseUtcConversionInDateTypes)
                 dateValue = dateValue.ToOffset(TimeSpan.Zero);
