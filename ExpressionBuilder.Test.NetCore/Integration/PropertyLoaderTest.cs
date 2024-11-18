@@ -21,8 +21,8 @@ public class PropertyLoaderTest
         PropertyCollection properties = new(typeof(Person));
         var id = properties.ToList().Single(p => p.Id == "Id");
         var name = properties.ToList().Single(p => p.Id == "Name");
-        id.MemberType.Should().Be(typeof(int));
-        name.MemberType.Should().Be(typeof(string));
+        id.MemberType.Should().Be<int>();
+        name.MemberType.Should().Be<string>();
     }
 
     [TestCase(TestName = "Checking if all properties and fields were loaded")]

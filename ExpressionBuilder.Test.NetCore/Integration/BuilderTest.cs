@@ -14,7 +14,6 @@ using System.Linq;
 namespace ExpressionBuilder.Test.Integration;
 
 [TestFixture]
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S6562:Always set the \"DateTimeKind\" when creating new \"DateTime\" instances", Justification = "<Pending>")]
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1862:Use the 'StringComparison' method overloads to perform case-insensitive string comparisons", Justification = "<Pending>")]
 public class BuilderTest
 {

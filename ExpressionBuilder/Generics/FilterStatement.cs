@@ -147,7 +147,7 @@ public class FilterStatement<TPropertyType> : IFilterStatement
             ? Enum.Parse(typeof(TPropertyType), reader.ReadElementContentAsString())
             : Convert.ChangeType(reader.ReadElementContentAsString(), typeof(TPropertyType));
 
-        Connector = (Connector)Enum.Parse(typeof(Connector), reader.ReadElementContentAsString());
+        Connector = Enum.Parse<Connector>(reader.ReadElementContentAsString());
     }
 
     /// <summary>

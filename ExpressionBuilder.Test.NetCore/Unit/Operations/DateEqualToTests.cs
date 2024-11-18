@@ -28,9 +28,9 @@ public class DateEqualToTests
     public void GetExpressionDateTimeValueTest(string propertyName, object value, bool useUtcConversionInDateTypes)
     {
         Settings.UseUtcConversionInDateTypes = useUtcConversionInDateTypes;
-        DateTime? dateValue = null;
-        var startDate = Settings.UseUtcConversionInDateTypes ? dateValue : dateValue;
-        var endDate = startDate.Value.AddDays(1).AddTicks(-1);
+        var dateValue = DateTime.Parse(value.ToString());
+        var startDate = Settings.UseUtcConversionInDateTypes ? dateValue.ToUniversalTime() : dateValue;
+        var endDate = startDate.AddDays(1).AddTicks(-1);
         var operation = new DateEqualTo();
         var param = Expression.Parameter(typeof(Person), "x");
         var member = Expression.Property(param, propertyName);

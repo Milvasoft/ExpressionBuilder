@@ -85,6 +85,6 @@ public class FilterTest
     public void ShouldCreateAFilterByPassingTheTypeAsAnArgument()
     {
         var filter = FilterFactory.Create(typeof(Person));
-        filter.Should().BeOfType(typeof(Filter<Person>));
+        filter.Should().BeOfType<Filter<Person>>();
     }
 }
