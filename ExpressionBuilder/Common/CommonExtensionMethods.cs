@@ -7,7 +7,6 @@ namespace ExpressionBuilder.Common;
 public static class CommonExtensionMethods
 {
     private static readonly MethodInfo _trimMethod = typeof(string).GetMethod("Trim", []);
-    private static readonly MethodInfo _toLowerMethod = typeof(string).GetMethod("ToLower", []);
 
     /// <summary>
     /// Gets a member expression for an specific property
