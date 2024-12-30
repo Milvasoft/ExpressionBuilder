@@ -45,7 +45,7 @@ public class IsNullOrWhiteSpaceOrNotOperationsTests
         //Testing the operation execution
         var lambda = Expression.Lambda<Func<Person, bool>>(expression, param);
         var people = TestData.People.Where(lambda.Compile());
-        var solution = TestData.People.Where(x => x.Birth == null || (x.Birth.Country == null || (x.Birth.Country != null && x.Birth.Country.Trim().ToLower() == string.Empty)));
+        var solution = TestData.People.Where(x => x.Birth == null || (x.Birth.Country == null || (x.Birth.Country != null && x.Birth.Country.Trim() == string.Empty)));
         Assert.That(people, Is.EquivalentTo(solution));
     }
 
@@ -71,7 +71,7 @@ public class IsNullOrWhiteSpaceOrNotOperationsTests
         //Testing the operation execution
         var lambda = Expression.Lambda<Func<Person, bool>>(expression, param);
         var people = TestData.People.Where(lambda.Compile());
-        var solution = TestData.People.Where(x => x.Birth != null && x.Birth.Country != null && x.Birth.Country.Trim().ToLower() != string.Empty);
+        var solution = TestData.People.Where(x => x.Birth != null && x.Birth.Country != null && x.Birth.Country.Trim() != string.Empty);
         Assert.That(people, Is.EquivalentTo(solution));
     }
 }

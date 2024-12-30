@@ -21,9 +21,9 @@ public class EqualTo : OperationBase
         if (member.Type != typeof(string))
             return Expression.Equal(member, constant);
 
-        constant = constant1.TrimToLower();
+        constant = constant1.Trim();
 
-        return Expression.Equal(member.TrimToLower(), constant)
+        return Expression.Equal(member.Trim(), constant)
             .AddNullCheck(member);
     }
 }

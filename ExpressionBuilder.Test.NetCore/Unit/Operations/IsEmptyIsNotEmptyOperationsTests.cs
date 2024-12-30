@@ -51,7 +51,7 @@ public class IsEmptyIsNotEmptyOperationsTests
         Assert.That(people, Is.EquivalentTo(solution));
     }
 
-    public static Func<Person, bool> IsEmpty() => x => x.Birth != null && (x.Birth.Country != null && x.Birth.Country.Trim().ToLower() == string.Empty);
+    public static Func<Person, bool> IsEmpty() => x => x.Birth != null && (x.Birth.Country != null && x.Birth.Country.Trim() == string.Empty);
 
-    public static Func<Person, bool> IsNotEmpty() => x => x.Birth != null && (x.Birth.Country != null && x.Birth.Country.Trim().ToLower() != string.Empty);
+    public static Func<Person, bool> IsNotEmpty() => x => x.Birth != null && (x.Birth.Country != null && x.Birth.Country.Trim() != string.Empty);
 }

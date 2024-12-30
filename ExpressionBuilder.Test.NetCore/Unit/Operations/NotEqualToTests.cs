@@ -51,7 +51,7 @@ public class NotEqualToTests
         Assert.That(people, Is.EquivalentTo(solution));
     }
 
-    public static Func<Person, bool> Name(string value) => x => x.Name.Trim().ToLower() != value.Trim().ToLower();
+    public static Func<Person, bool> Name(string value) => x => x.Name.Trim() != value.Trim();
 
     public static Func<Person, bool> Salary(double value) => x => x.Salary != value;
 }

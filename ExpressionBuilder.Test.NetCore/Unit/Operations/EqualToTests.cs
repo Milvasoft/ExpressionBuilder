@@ -51,7 +51,7 @@ public class EqualToTests
         Assert.That(people, Is.EquivalentTo(solution));
     }
 
-    public static Func<Person, bool> Name(string value) => x => x.Name.Trim().ToLower() == value.ToString().Trim().ToLower();
+    public static Func<Person, bool> Name(string value) => x => x.Name.Trim() == value.ToString().Trim();
 
     public static Func<Person, bool> Salary(double value) => x => x.Salary == value;
 }

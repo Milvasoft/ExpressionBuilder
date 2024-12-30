@@ -45,10 +45,10 @@ public class MethodCallOperationsTests
         var method = contains.Method;
         method.Name.Should().Be(methodName);
 
-        var property = contains.Object.ExtractTrimToLowerProperty();
+        var property = contains.Object.ExtractTrimProperty();
         property.Member.Name.Should().Be(propertyName);
 
-        var constant = contains.Arguments[0].ExtractTrimToLowerConstant();
+        var constant = contains.Arguments[0].ExtractTrimConstant();
         constant.Value.Should().Be(value);
 
         //Testing the operation execution
@@ -59,9 +59,9 @@ public class MethodCallOperationsTests
         people.Should().BeEquivalentTo(solution);
     }
 
-    public static Func<Person, bool> Contains(string value) => x => x.Name.Trim().ToLower().Contains(value.Trim().ToLower());
+    public static Func<Person, bool> Contains(string value) => x => x.Name.Trim().Contains(value.Trim());
 
-    public static Func<Person, bool> EndsWith(string value) => x => x.Name.Trim().ToLower().EndsWith(value.Trim().ToLower());
+    public static Func<Person, bool> EndsWith(string value) => x => x.Name.Trim().EndsWith(value.Trim());
 
-    public static Func<Person, bool> StartsWith(string value) => x => x.Name.Trim().ToLower().StartsWith(value.Trim().ToLower());
+    public static Func<Person, bool> StartsWith(string value) => x => x.Name.Trim().StartsWith(value.Trim());
 }

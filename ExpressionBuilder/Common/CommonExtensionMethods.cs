@@ -34,10 +34,11 @@ public static class CommonExtensionMethods
     /// </summary>
     /// <param name="member">Member to which to methods will be applied.</param>
     /// <returns></returns>
-    public static Expression TrimToLower(this MemberExpression member)
+    public static Expression Trim(this MemberExpression member)
     {
         var trimMemberCall = Expression.Call(member, _trimMethod);
-        return Expression.Call(trimMemberCall, _toLowerMethod);
+
+        return trimMemberCall;
     }
 
     /// <summary>
@@ -45,10 +46,11 @@ public static class CommonExtensionMethods
     /// </summary>
     /// <param name="constant">Constant to which to methods will be applied.</param>
     /// <returns></returns>
-    public static Expression TrimToLower(this ConstantExpression constant)
+    public static Expression Trim(this ConstantExpression constant)
     {
         var trimMemberCall = Expression.Call(constant, _trimMethod);
-        return Expression.Call(trimMemberCall, _toLowerMethod);
+
+        return trimMemberCall;
     }
 
     /// <summary>

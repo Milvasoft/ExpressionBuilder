@@ -44,16 +44,16 @@ public class DoesNotContainTests
         var method = doesNotContain.Method;
         method.Name.Should().Be("Contains");
 
-        var property = doesNotContain.Object.ExtractTrimToLowerProperty();
+        var property = doesNotContain.Object.ExtractTrimProperty();
         property.Member.Name.Should().Be(propertyName);
 
-        var constant = doesNotContain.Arguments[0].ExtractTrimToLowerConstant();
+        var constant = doesNotContain.Arguments[0].ExtractTrimConstant();
         constant.Value.Should().Be(value);
 
         //Testing the operation execution
         var lambda = Expression.Lambda<Func<Person, bool>>(expression, param);
         var people = TestData.People.Where(lambda.Compile());
-        var solution = TestData.People.Where(x => !x.Name.Trim().ToLower().Contains("doe"));
+        var solution = TestData.People.Where(x => !x.Name.Trim().Contains("Doe"));
         people.Should().BeEquivalentTo(solution);
     }
 }

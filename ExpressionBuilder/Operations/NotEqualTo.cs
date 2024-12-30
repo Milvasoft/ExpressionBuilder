@@ -21,9 +21,9 @@ public class NotEqualTo : OperationBase
         if (member.Type != typeof(string))
             return Expression.NotEqual(member, constant);
 
-        constant = constant1.TrimToLower();
+        constant = constant1.Trim();
 
-        return Expression.NotEqual(member.TrimToLower(), constant)
+        return Expression.NotEqual(member.Trim(), constant)
             .AddNullCheck(member);
     }
 }

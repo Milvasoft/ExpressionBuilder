@@ -14,6 +14,6 @@ public class IsEmpty : OperationBase
     public IsEmpty() : base(nameof(IsEmpty), ValueCount, TypeGroup.Text) { }
 
     /// <inheritdoc />
-    public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2) => Expression.Equal(member.TrimToLower(), Expression.Constant(string.Empty))
+    public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2) => Expression.Equal(member.Trim(), Expression.Constant(string.Empty))
             .AddNullCheck(member);
 }

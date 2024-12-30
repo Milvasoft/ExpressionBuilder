@@ -73,8 +73,8 @@ So that would generate an expression like this:
 ```CSharp
 People.Where(p => (p.Id >= 2 && p.Id <= 4)
              && (p.Birth != null && p.Birth.Country != null)
-             && (p.Contacts != null && p.Contacts.Any(c => c.Value.Trim().ToLower().EndsWith("@email.com")))
-             || (p.Name != null  && p.Name.Trim().ToLower().Contains("john")));
+             && (p.Contacts != null && p.Contacts.Any(c => c.Value.Trim().EndsWith("@email.com")))
+             || (p.Name != null  && p.Name.Trim().Contains("john")));
 ```
 
 ## Conventions

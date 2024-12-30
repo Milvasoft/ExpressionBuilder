@@ -19,8 +19,8 @@ public class EndsWith : OperationBase
     /// <inheritdoc />
     public override Expression GetExpression(MemberExpression member, ConstantExpression constant1, ConstantExpression constant2)
     {
-        var constant = constant1.TrimToLower();
+        var constant = constant1.Trim();
 
-        return Expression.Call(member.TrimToLower(), _endsWithMethod, constant).AddNullCheck(member);
+        return Expression.Call(member.Trim(), _endsWithMethod, constant).AddNullCheck(member);
     }
 }

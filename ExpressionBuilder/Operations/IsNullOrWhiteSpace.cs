@@ -23,6 +23,6 @@ public class IsNullOrWhiteSpace : OperationBase
             Expression.Equal(member, exprNull),
             Expression.AndAlso(
                 Expression.NotEqual(member, exprNull),
-                Expression.Equal(member.TrimToLower(), exprEmpty)));
+                Expression.Equal(member.Trim(), exprEmpty)));
     }
 }

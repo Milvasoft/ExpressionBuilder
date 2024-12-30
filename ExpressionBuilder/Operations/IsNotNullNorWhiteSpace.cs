@@ -21,6 +21,6 @@ public class IsNotNullNorWhiteSpace : OperationBase
 
         return Expression.AndAlso(
             Expression.NotEqual(member, exprNull),
-            Expression.NotEqual(member.TrimToLower(), exprEmpty));
+            Expression.NotEqual(member.Trim(), exprEmpty));
     }
 }

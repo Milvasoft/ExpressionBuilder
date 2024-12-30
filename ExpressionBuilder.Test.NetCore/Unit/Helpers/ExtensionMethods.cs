@@ -38,28 +38,26 @@ public static class ExtensionMethods
         Assert.That(should.Subject, Is.AssignableTo<Expression>());
         var expression = (BinaryExpression)should.Subject;
 
-        var property = expression.Left.ExtractTrimToLowerProperty();
+        var property = expression.Left.ExtractTrimProperty();
         property.Member.Name.Should().Be(propertyName);
 
         Assert.That(expression.NodeType, Is.EqualTo(expressionType));
 
-        var constant = trimToLowerValue ? expression.Right.ExtractTrimToLowerConstant() : (ConstantExpression)expression.Right;
+        var constant = trimToLowerValue ? expression.Right.ExtractTrimConstant() : (ConstantExpression)expression.Right;
         constant.Value.Should().Be(value);
 
         return new AndConstraint<ObjectAssertions>(should);
     }
 
-    public static MemberExpression ExtractTrimToLowerProperty(this Expression expression)
+    public static MemberExpression ExtractTrimProperty(this Expression expression)
     {
-        var toLower = (MethodCallExpression)expression;
-        var trim = (MethodCallExpression)toLower.Object;
+        var trim = (MethodCallExpression)expression;
         return (MemberExpression)trim.Object;
     }
 
-    public static ConstantExpression ExtractTrimToLowerConstant(this Expression expression)
+    public static ConstantExpression ExtractTrimConstant(this Expression expression)
     {
-        var toLower = (MethodCallExpression)expression;
-        var trim = (MethodCallExpression)toLower.Object;
+        var trim = (MethodCallExpression)expression;
         return (ConstantExpression)trim.Object;
     }
 }
